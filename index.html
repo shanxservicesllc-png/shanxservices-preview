@@ -22,16 +22,37 @@ section{padding:68px 0}.section-title{font-size:clamp(28px,4vw,44px);margin:0 0 
 .worker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:520px){.worker-grid{grid-template-columns:1fr}}.worker{border:1px solid #32290f;border-radius:12px;padding:14px;background:#070708}.worker b{display:flex;justify-content:space-between}.worker small{color:var(--green)}.taskbox{margin-top:12px;display:flex;gap:8px}.taskbox input{flex:1;min-width:0;background:#050505;color:var(--text);border:1px solid #3b3011;border-radius:10px;padding:11px}.taskbox button{background:#16120a;color:var(--gold);border:1px solid var(--gold2);border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}.log{margin-top:12px;color:var(--muted);font-size:13px;max-height:130px;overflow:auto;text-align:left}
 .contact{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}@media(max-width:700px){.contact{grid-template-columns:1fr}}footer{padding:30px 0 44px;color:#756f61;border-top:1px solid var(--line);font-size:13px}
 .pill{display:inline-block;padding:5px 9px;border:1px solid #493b13;border-radius:999px;color:#d6bb63;font-size:11px;margin-bottom:12px}
+/* SHANX ARCADE LAB - optional section in existing corporate homepage */
+.arcade-promo{background:radial-gradient(ellipse at 30% 20%,#193f3c 0%,transparent 44%),radial-gradient(ellipse at 90% 95%,#3a2e1b,transparent 42%),linear-gradient(#0b0f18,#080a10);border-top:1px solid #d7ff533b;border-bottom:1px solid #d7ff532d;overflow:hidden}
+.arcade-header{display:flex;align-items:end;justify-content:space-between;gap:20px}
+.arcade-header .pill{border-color:#d7ff538c;color:#d7ff53;background:#d7ff530e}
+.arcade-header .section-title{font-size:clamp(52px,8vw,94px);font-weight:1000;line-height:.9;letter-spacing:-.07em;color:#f6f9e8}
+.arcade-header .section-title em{font-style:normal;color:#d7ff53}
+.arcade-header .section-copy{max-width:550px;font-size:16px}
+.arcade-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:29px 0 26px}
+.arcade-tile{display:flex;align-items:center;min-height:217px;gap:16px;overflow:hidden;background:linear-gradient(105deg,#1d2b2d,#0d111c);border:1px solid #d7ff5361;border-radius:20px;padding:16px;box-shadow:0 10px 45px #0005;transition:border-color .2s,transform .2s}
+.arcade-tile.gold{background:linear-gradient(105deg,#342c25,#12101d);border-color:#ffc85b7f}
+.arcade-tile:hover{border-color:#d7ff53;transform:translateY(-3px)}
+.arcade-tile img{width:115px;height:185px;object-fit:cover;object-position:top;border:1px solid #ffffff30;border-radius:12px;box-shadow:0 7px 28px #0008}
+.arcade-tile b{display:block;font-size:clamp(21px,2.5vw,30px);line-height:1.04;letter-spacing:-.045em}
+.arcade-tile small{display:block;font-size:11px;letter-spacing:.14em;color:#d7ff53;margin-top:12px;font-weight:900}
+.arcade-tile.gold small{color:#ffcf65}
+.arcade-tile span{display:block;color:#b9c6d3;font-size:13px;line-height:1.5;margin-top:12px}
+.arcade-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:1px solid #ffffff26;padding-top:22px}
+.arcade-cta a{background:#d7ff53;border-color:#d7ff53;color:#13210b;font-size:15px}
+.arcade-cta p{color:#a2b1bf;margin:0;font-size:13px}
+@media(max-width:850px){.arcade-tiles{grid-template-columns:1fr}}
+@media(max-width:560px){.arcade-header .section-title{font-size:58px}.arcade-header .section-copy{font-size:14px}.arcade-tile{min-height:190px}.arcade-tile img{height:145px;width:93px}.arcade-tile b{font-size:25px}.arcade-cta{align-items:start;flex-direction:column}}
 </style>
 </head>
 <body>
-<nav><div class="wrap nav"><a class="brand" href="#">SHANX SERVICES</a><div class="links"><a href="#services">Services</a><a href="#x13">X13</a><a href="#contact">Contact</a></div></div></nav>
+<div style="background:#d7ff53;color:#142016;padding:5px;text-align:center;font-size:11px;font-weight:900;letter-spacing:1.5px">ARCADE LAB ALPHA PREVIEW · MAIN DOMAIN NOT CHANGED</div><nav><div class="wrap nav"><a class="brand" href="#">SHANX SERVICES</a><div class="links"><a href="#services">Services</a><a href="#arcade">Arcade</a><a href="#x13">X13</a><a href="#contact">Contact</a></div></div></nav>
 
 <header class="hero wrap">
 <div class="eyebrow">BUILD • AUTOMATE • ORCHESTRATE</div>
 <h1>Systems that turn ideas into working tools.</h1>
 <p>ShanX Services builds practical AI workflows, custom digital tools, automation, and automotive technology with one goal: make the system actually work.</p>
-<div class="actions"><a class="btn primary" href="#x13">Open X13 Preview</a><a class="btn" href="mailto:henry.shannon@shanxservices.com">Start a Project</a></div>
+<div class="actions"><a class="btn primary" href="arcade/index.html">Explore Arcade Lab</a><a class="btn" href="mailto:henry.shannon@shanxservices.com">Start a Project</a></div>
 </header>
 
 <section id="services"><div class="wrap">
@@ -44,6 +65,14 @@ section{padding:68px 0}.section-title{font-size:clamp(28px,4vw,44px);margin:0 0 
 <div class="card"><h3>Automotive Technology</h3><p>Diagnostics, data tooling, scanner concepts, and workflow systems built around real shop needs.</p></div>
 </div></div></section>
 
+<section id="arcade" class="arcade-promo"><div class="wrap">
+<div class="arcade-header"><div><div class="pill">NEW · SHANX ORIGINAL GAME EXPERIMENTS</div><h2 class="section-title">ARCADE <em>LAB.</em></h2><p class="section-copy">Small games, bold ideas. Drop in for an arcade runner or Chase's original foam-bot challenge. These are playable alpha experiments from our creative workshop.</p></div></div>
+<div class="arcade-tiles">
+<a class="arcade-tile" href="arcade/games/street-sprint.html"><img src="arcade/media/street-sprint-gameplay.png" alt="ShanX Street Sprint arcade runner preview" loading="lazy"><div><b>Street Sprint</b><small>ROAD RUNNER / LEVEL 001</small><span>Dodge cars, collect boosts, and beat your high score.</span></div></a>
+<a class="arcade-tile gold" href="arcade/games/chase-foam-blaster.html"><img src="arcade/media/chase-foam-blaster-gameplay.png" alt="Chase's Foam Blaster game preview" loading="lazy"><div><b>Chase's Foam Blaster</b><small>FOAM-BOT BATTLE / LEVEL 002</small><span>Three maps. Colorful bots. Inspired by Chase's idea.</span></div></a>
+</div>
+<div class="arcade-cta"><p>Free browser experiments · Touch and keyboard friendly</p><a class="btn" href="arcade/index.html">ENTER THE ARCADE LAB ↗</a></div>
+</div></section>
 <section id="x13" class="x13"><div class="wrap">
 <div class="pill">X13 MASTER OPERATIONS</div><h2 class="section-title">The X13 Loop Box</h2>
 <p class="section-copy">The actual X13 Loop Box runtime interface — preserved from the verified working build, not a simulated demo.</p>
