@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b12">
+<meta name="description" content="ShanX Arcade Lab. Original playable browser game experiments, crafted by ShanX Services.">
+<title>Arcade Lab | ShanX Services</title>
+<style>
+:root{--bg:#080b12;--card:#121827;--text:#f9f8f4;--muted:#9da8b8;--lime:#d7ff53;--gold:#ffcf65;--cyan:#7be9f5;--line:#ffffff26}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;min-height:100svh}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 70% 40% at 8% 3%,#203f4766,transparent),radial-gradient(ellipse 40% 40% at 98% 6%,#684b2030,transparent),linear-gradient(#ffffff07 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:auto,auto,48px 48px,48px 48px}
+a{color:inherit;text-decoration:none}.shell{width:min(1200px,92%);margin-inline:auto}.topline{background:#d7ff53;color:#142016;text-align:center;text-transform:uppercase;letter-spacing:.19em;font-size:10px;font-weight:900;padding:6px 10px}
+nav{border-bottom:1px solid #ffffff21;background:#080c14e8;backdrop-filter:blur(16px);position:sticky;top:0;z-index:20}.nav-in{height:76px;display:flex;gap:16px;align-items:center;justify-content:space-between}.logo{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:900;letter-spacing:.18em}.logo-mark{width:43px;height:43px;display:grid;place-items:center;border:1px solid var(--lime);border-radius:12px;background:#17221b;box-shadow:inset 0 0 18px #c5ed2f2e;color:var(--lime);font-size:19px;font-weight:1000}.nav-links{display:flex;align-items:center;gap:24px;color:#ccd4df;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.nav-links a:hover,.nav-links a:focus-visible{color:var(--lime)}.nav-pill{border:1px solid #ffffff4d;border-radius:100px;padding:11px 15px}
+.hero{position:relative;padding:82px 0 64px}.hero:after{content:"";position:absolute;right:3%;top:12%;width:150px;height:150px;border:1px solid #d7ff533b;transform:rotate(18deg);border-radius:34px;pointer-events:none}.hero-tag,.eyebrow{display:flex;align-items:center;gap:10px;text-transform:uppercase;color:var(--lime);font-size:12px;font-weight:900;letter-spacing:.2em}.hero-tag:before,.eyebrow:before{content:"";display:block;width:24px;height:2px;background:var(--lime)}.hero h1{font-size:clamp(78px,15vw,182px);line-height:.77;margin:25px 0 30px;font-weight:1000;letter-spacing:-.10em;max-width:100%;overflow:visible}.hero h1 span{display:block}.hero h1 .glow{color:var(--lime);text-shadow:0 0 60px #b8e32f44}.hero-bottom{display:flex;gap:32px;justify-content:space-between;align-items:end}.hero-lead{font-size:clamp(17px,2.4vw,23px);color:#c5cad0;line-height:1.5;max-width:610px;margin:0}.hero-aside{min-width:190px;text-align:right;color:#afbbcb;font-size:13px;line-height:1.65}.hero-aside strong{display:block;font-size:36px;line-height:1;color:white;letter-spacing:-.05em}.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:19px 0}.strip-in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:11px;letter-spacing:.16em;font-weight:900;color:#a8b9c5;text-transform:uppercase}.strip em{color:var(--lime);font-style:normal}
+.games{padding:73px 0 100px}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:25px}.section-head h2{font-size:clamp(34px,5vw,64px);line-height:1;margin:13px 0 0;letter-spacing:-.055em}.section-head p{color:#a7b4c1;margin:0;max-width:240px;font-size:13px;line-height:1.55}
+.game-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.game{position:relative;isolation:isolate;background:linear-gradient(150deg,#172029,#0a0d15 65%);border:1px solid #ffffff2e;border-radius:27px;overflow:hidden;min-width:0;box-shadow:0 15px 40px #0006;transition:transform .22s,border-color .22s,box-shadow .22s}
+.game:hover{transform:translateY(-5px);border-color:#d7ff53a0;box-shadow:0 24px 66px #0009}
+.game.gold:hover{border-color:#ffbf55}
+.game-media{position:relative;height:390px;overflow:hidden;background:radial-gradient(ellipse at 60% 30%,#244c3d,#11161d 65%);display:flex;justify-content:center;align-items:center}
+.game.gold .game-media{background:radial-gradient(ellipse at 50% 22%,#78623a,#1a1420 64%)}
+.game-media:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,#0d101a 0%,#0d101a11 26%,transparent 50%);z-index:1}
+.game-media:before{content:"";position:absolute;inset:-100%;background:linear-gradient(100deg,transparent 45%,#ffffff0b 50%,transparent 55%);transform:rotate(7deg);pointer-events:none}
+.game-media img{height:112%;width:auto;max-width:95%;object-fit:cover;object-position:top center;filter:drop-shadow(0 18px 28px #0009);border-radius:17px;transform:translateY(40px) rotate(-3deg);border:1px solid #ffffff3a;box-shadow:0 12px 60px #0009;transition:transform .3s}
+.game.gold .game-media img{transform:translateY(40px) rotate(3deg)}
+.game:hover .game-media img{transform:translateY(22px) rotate(0deg) scale(1.03)}
+.game-index{position:absolute;top:20px;left:21px;z-index:3;padding:9px 11px;background:#080b12ba;border:1px solid #ffffff4d;border-radius:10px;font-size:12px;letter-spacing:.18em;font-weight:900}
+.game-genre{position:absolute;z-index:3;top:20px;right:20px;padding:9px 12px;border:1px solid #d7ff53bb;border-radius:100px;background:#081509b8;color:var(--lime);font-size:10px;font-weight:900;letter-spacing:.12em}
+.game.gold .game-genre{color:var(--gold);background:#251405bb;border-color:var(--gold)}
+.game-info{padding:27px 28px 30px}.game-info h3{font-size:clamp(30px,3.4vw,49px);margin:0 0 10px;line-height:1.06;letter-spacing:-.055em}.game-info p{margin:0;max-width:480px;color:#aebccc;font-size:15px;line-height:1.6;min-height:70px}
+.game-meta{margin:18px 0 25px;display:flex;flex-wrap:wrap;gap:9px;color:#c2d3db;font-size:11px;font-weight:800;letter-spacing:.08em}.game-meta span{border:1px solid #ffffff2f;padding:6px 10px;border-radius:999px}
+.play{display:flex;align-items:center;justify-content:space-between;width:100%;border-radius:14px;padding:17px 19px;font-size:14px;font-weight:1000;letter-spacing:.06em;background:var(--lime);color:#162012;transition:filter .2s,transform .2s}.play:hover{filter:brightness(1.1)}.play:focus-visible{outline:3px solid white;outline-offset:3px}.play .arrow{font-size:21px}.gold .play{background:var(--gold);color:#2f1b05}
+.hint{margin-top:16px;font-size:12px;color:#9eabba}
+.lab-note{margin-top:28px;border:1px solid #ffffff26;border-radius:19px;display:flex;align-items:center;gap:21px;padding:23px 25px;background:#0e1420}.lab-mark{width:46px;height:46px;border-radius:14px;background:#d7ff531b;border:1px solid #d7ff53aa;color:var(--lime);display:grid;place-items:center;flex-shrink:0;font-size:24px}.lab-note strong{display:block;margin-bottom:4px}.lab-note p{margin:0;color:#abb9c7;line-height:1.55;font-size:13px}
+footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:#8a9aaa;font-size:12px}.foot a{color:#d7ff53}
+@media(max-width:800px){.hero{padding-top:60px}.hero-aside{display:none}.game-grid{grid-template-columns:1fr}.game-media{height:330px}.nav-links{gap:12px}.section-head{align-items:start;flex-direction:column}}
+@media(max-width:520px){.nav-in{height:66px}.logo{font-size:12px}.logo-mark{width:36px;height:36px}.nav-links{font-size:10px}.nav-links .nav-pill{display:none}.hero h1{font-size:clamp(65px,18vw,92px);letter-spacing:-.095em}.hero:after{width:64px;height:64px}.hero-lead{font-size:16px}.strip-in{font-size:9px;gap:10px}.games{padding-top:54px}.game-media{height:295px}.game-info{padding:23px}.game-info p{min-height:0}.game-info h3{font-size:33px}.game-index,.game-genre{top:14px}.game-index{left:14px}.game-genre{right:14px}.lab-note{align-items:start}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="topline">PUBLIC PREVIEW · ARCADE LAB ALPHA</div>
+<nav><div class="shell nav-in">
+<a class="logo" href="../index.html" aria-label="Back to ShanX Services"><span class="logo-mark">X</span><span>SHANX / ARCADE LAB</span></a>
+<div class="nav-links"><a href="#play">Games</a><a class="nav-pill" href="../index.html">← Main site</a></div>
+</div></nav>
+<main>
+<header class="hero shell">
+<div class="hero-tag">SHANX SERVICES / THE EXPERIMENTAL PLAYGROUND</div>
+<h1><span>ARCADE</span><span class="glow">LAB<span style="color:#fafaf3">.</span></span></h1>
+<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>02</strong>Original playable prototypes<br>Made for the browser</div></div>
+</header>
+<div class="strip"><div class="shell strip-in"><span><em>●</em> CLICK TO PLAY</span><span>DESKTOP + MOBILE</span><span>FREE EXPERIMENTS</span><span>NO DOWNLOAD NEEDED</span></div></div>
+<section class="games shell" id="play">
+<div class="section-head"><div><div class="eyebrow">INSERT CURIOSITY</div><h2>Choose your game.</h2></div><p>Made to be played, tested, and improved. Your next favorite prototype could start here.</p></div>
+<div class="game-grid">
+<article class="game"><div class="game-media"><span class="game-index">LEVEL 001</span><span class="game-genre">NEON ROAD RUNNER</span><img src="media/street-sprint-gameplay.png" alt="Street Sprint gameplay showing a colorful car racing down a dark neon-lit road" loading="eager"></div><div class="game-info">
+<h3>Street Sprint.</h3>
+<p>Dodge traffic, grab electric power-ups, and beat your best run while the road keeps getting faster.</p>
+<div class="game-meta"><span>FAST ARCADE</span><span>TOUCH + KEYS</span><span>HIGH SCORE</span></div>
+<a class="play" href="games/street-sprint.html">PLAY STREET SPRINT <span class="arrow" aria-hidden="true">↗</span></a>
+<div class="hint">Swipe or drag to steer. Arrow keys also work.</div></div></article>
+<article class="game gold"><div class="game-media"><span class="game-index">LEVEL 002</span><span class="game-genre">FOAM-BOT ARENA</span><img src="media/chase-foam-blaster-gameplay.png" alt="Foam Blaster gameplay showing bright low-poly city scenery, blaster, and game HUD" loading="lazy"></div><div class="game-info">
+<h3>Chase's Foam Blaster.</h3>
+<p>Chase had the idea. Now it's a full foam-dart playground: pick a map, choose your bot difficulty, and jump into the action.</p>
+<div class="game-meta"><span>CHASE'S IDEA</span><span>3 MAPS</span><span>TOUCH + KEYS</span></div>
+<a class="play" href="games/chase-foam-blaster.html">PLAY FOAM BLASTER <span class="arrow" aria-hidden="true">↗</span></a>
+<div class="hint">Choose your map and difficulty, then step into the arena.</div></div></article>
+</div>
+<div class="lab-note"><span class="lab-mark">✦</span><div><strong>A lab, not a finished-game store.</strong><p>These are experimental alpha builds. They're playable now, and the lab will evolve as we make them better. Gameplay progress and highscores stay in your browser where supported.</p></div></div>
+</section>
+</main>
+<footer><div class="shell foot"><span>© <span id="year">2026</span> ShanX Services · Arcade Lab</span><span>FROM IDEA → INTERACTIVE · <a href="../index.html">BACK TO SHANX SERVICES ↗</a></span></div></footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body></html>
