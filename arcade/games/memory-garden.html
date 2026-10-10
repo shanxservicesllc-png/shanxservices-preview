@@ -50,6 +50,21 @@ select{color:#fff;background:#243e2d;border:1px solid #e7d29188;border-radius:12
 .win{margin:0 20px 22px;border:1px solid #f8d57e;background:#eedc9140;padding:22px;border-radius:17px;text-align:center}
 .win[hidden]{display:none}.win h2{color:var(--gold);font-size:25px;margin:0 0 8px}.win p{margin:0 0 15px}
 .instructions{max-width:680px;text-align:center;color:#d3dfd1;font-size:14px;margin:22px auto 0;padding:0 10px}
+.feedback{margin:31px auto 0;padding:26px;background:linear-gradient(145deg,#213b2a,#0d2018);border:1px solid #a7dba577;border-radius:23px}
+.feedback-tag{font-weight:1000;font-size:11px;letter-spacing:.14em;color:var(--mint)}
+.feedback h2{font-size:clamp(27px,4vw,37px);margin:8px 0;letter-spacing:-.045em}
+.feedback p{color:#d6e5d8;line-height:1.6;margin:0 0 19px}
+.feedback-grid{display:grid;grid-template-columns:1fr 2fr;gap:14px;align-items:start}
+.feedback label{display:block;margin-bottom:7px;color:var(--gold);font-size:12px;font-weight:900;letter-spacing:.05em}
+.feedback select,.feedback textarea{width:100%;background:#101e17;color:#fffef5;border:1px solid #bfdab37a;border-radius:12px;min-height:48px;padding:12px;font-size:16px}
+.feedback textarea{resize:vertical;min-height:108px;line-height:1.45}
+.feedback .feedback-help{margin:14px 0 17px;color:#bacdbb;font-size:12px}
+.feedback-actions{display:flex;gap:10px;flex-wrap:wrap}
+.feedback-email,.feedback-copy{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:13px 16px;font-weight:900;min-height:49px;text-decoration:none}
+.feedback-email{background:var(--mint);color:#102618}
+.feedback-copy{background:#2d4e3d;color:#fff;border:1px solid #9edbad88}
+.feedback-status{font-size:13px;color:#f8dc94;min-height:22px;margin-top:13px}
+@media(max-width:550px){.feedback{padding:20px 14px;margin:25px 4px 0}.feedback-grid{grid-template-columns:1fr}.feedback-actions>*{width:100%}}
 footer{text-align:center;color:#a4b9a7;font-size:12px;margin:28px 0 0}
 footer a{color:#c6e7cc}
 @media(max-width:550px){
@@ -79,19 +94,39 @@ header{padding:8px 9px 22px}header p{font-size:15px}
 <section class="game" aria-label="Memory matching game">
 <div class="toolbar">
 <fieldset><label for="level">CHOOSE YOUR GARDEN</label><select id="level">
-<option value="easy">🌱 Easy · 3 pairs</option>
-<option value="medium">🌻 Growing · 6 pairs</option>
-<option value="challenge">🌺 Blooming · 8 pairs</option>
+<option value="easy">🌱 Easy · 6 cards (3 pairs)</option>
+<option value="medium" selected>🌻 Growing · 12 cards (6 pairs)</option>
+<option value="challenge">🌺 Blooming · 16 cards (8 pairs)</option>
 </select></fieldset>
 <div class="controls"><button class="control" id="peek" type="button">👀 Show Me Again</button><button class="control primary" id="new" type="button">↻ New Game</button></div>
 </div>
-<div class="status"><div class="count">Pairs found: <strong id="found">0 / 3</strong></div><div class="help">No pressure. Go at your own pace. 💚</div></div>
-<div class="meter" role="progressbar" aria-label="Pairs matched" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" id="progress"><span id="fill"></span></div>
+<div class="status"><div class="count">Pairs found: <strong id="found">0 / 6</strong></div><div class="help">No pressure. Go at your own pace. 💚</div></div>
+<div class="meter" role="progressbar" aria-label="Pairs matched" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" id="progress"><span id="fill"></span></div>
 <div id="message" role="status" aria-live="polite">Take a look at the pictures, then find their matches!</div>
 <div id="cards" class="cards" aria-label="Matching cards"></div>
 <div class="win" id="win" hidden><h2>🌼 Beautifully Done! 🌼</h2><p id="winText">You matched all the pairs!</p><button class="control primary" id="next" type="button">Play Another Round ↗</button></div>
 </section>
 <div class="instructions"><strong>How to play:</strong> Tap one card and then another. If they match, they stay face-up! If you forget where something is, press <strong>Show Me Again</strong> to peek at all the cards. No time limit and no penalties.</div>
+<section class="feedback" id="feedback" aria-labelledby="feedbackTitle">
+<div class="feedback-tag">💌 HELP THIS GARDEN GROW</div>
+<h2 id="feedbackTitle">Tell us what you'd change!</h2>
+<p>More cards? Bigger pictures? A different challenge? Your ideas help us make the game better.</p>
+<div class="feedback-grid">
+<div><label for="feedbackKind">WHAT'S YOUR IDEA ABOUT?</label>
+<select id="feedbackKind">
+<option value="Cards and difficulty">Cards and difficulty</option>
+<option value="Pictures and colors">Pictures and colors</option>
+<option value="Controls and accessibility">Controls and accessibility</option>
+<option value="Something not working">Something not working</option>
+<option value="Other ideas">Other ideas</option>
+</select></div>
+<div><label for="feedbackText">YOUR SUGGESTION</label><textarea id="feedbackText" placeholder="For example: I'd like 16 cards and some animal pictures!" maxlength="1200" rows="4" aria-describedby="feedbackHelp"></textarea></div>
+</div>
+<p id="feedbackHelp" class="feedback-help">Tap the email button after writing your idea. Your email app opens a draft; tap <strong>Send</strong> there to deliver it. Suggestions are private, not public comments. Please don't include private or sensitive information.</p>
+<div class="feedback-actions"><a id="feedbackSend" class="feedback-email" href="mailto:henry.shannon@shanxservices.com?subject=Memory%20Garden%20Feedback">✉️ Email My Suggestion ↗</a>
+<button class="feedback-copy" id="feedbackCopy" type="button">📋 Copy Suggestion</button></div>
+<div id="feedbackStatus" role="status" aria-live="polite" class="feedback-status"></div>
+</section>
 <footer>Made with love by ShanX / X13 · A fun matching game, not a medical treatment. <a href="../index.html">Back to Arcade Lab</a></footer>
 </main>
 <script>
@@ -173,13 +208,38 @@ cancel();locked=true;selected=[];deck.forEach(x=>{x.open=false;x.preview=!x.matc
 say('Take a good look. No rush. 👀');paint();
 later(()=>{deck.forEach(x=>x.preview=false);locked=false;paint();say('Ready? Find your matching pictures.');},3000);
 }
+// Feedback stays private. The email application requires the player to press Send.
+const feedbackText=document.getElementById('feedbackText'),feedbackKind=document.getElementById('feedbackKind');
+const feedbackSend=document.getElementById('feedbackSend'),feedbackCopy=document.getElementById('feedbackCopy');
+const feedbackStatus=document.getElementById('feedbackStatus');
+function feedbackBody(){
+  return 'Hello! I played Memory Garden and have a suggestion.\n\nGame level: '+level.options[level.selectedIndex].text+'\nTopic: '+feedbackKind.value+'\n\nMy suggestion:\n'+feedbackText.value.trim()+'\n\nThank you!';
+}
+function feedbackMailto(){
+  return 'mailto:henry.shannon@shanxservices.com?subject='+encodeURIComponent('Memory Garden: '+feedbackKind.value)+'&body='+encodeURIComponent(feedbackBody());
+}
+function updateFeedback(){feedbackSend.href=feedbackMailto()}
+feedbackText.addEventListener('input',()=>{updateFeedback();feedbackStatus.textContent=''});
+feedbackKind.addEventListener('change',updateFeedback);
+level.addEventListener('change',updateFeedback);
+feedbackSend.addEventListener('click',e=>{
+ if(!feedbackText.value.trim()){e.preventDefault();feedbackStatus.textContent='Write a suggestion in the box first, then try again.';feedbackText.focus();return;}
+ feedbackStatus.textContent='Your email app should open with a draft. Please press Send in your email app to deliver it.';
+});
+feedbackCopy.addEventListener('click',async()=>{
+ if(!feedbackText.value.trim()){feedbackStatus.textContent='Write a suggestion in the box first.';feedbackText.focus();return;}
+ try{if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Clipboard unavailable');
+ await navigator.clipboard.writeText(feedbackBody());feedbackStatus.textContent='Copied! You can paste your suggestion into an email or message.';
+ }catch(_){feedbackStatus.textContent='Copy is unavailable here. You can select the text in the box to copy it yourself.';}
+});
+updateFeedback();
 document.getElementById('new').addEventListener('click',begin);
 document.getElementById('next').addEventListener('click',begin);
 level.addEventListener('change',begin);
 peek.addEventListener('click',showAgain);
 if(new URLSearchParams(location.search).has('arcadeQA'))window.__gardenQA={
 state:()=>({level:level.value,matched,selected:selected.slice(),locked,cards:deck.map(c=>({...c})),status:message.textContent}),
-click:i=>choose(i),preview:showAgain,newGame:begin
+click:i=>choose(i),preview:showAgain,newGame:begin,feedbackDraft:feedbackMailto
 };
 begin();
 })();
