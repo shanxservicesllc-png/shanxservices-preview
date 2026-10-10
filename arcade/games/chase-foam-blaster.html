@@ -16,7 +16,7 @@
 </script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<title>Chase&#39;s Foam Blaster | ShanX Arcade Lab</title>
+<title>Foam Blaster | ShanX Arcade Lab</title>
 <style>
   :root{--hud:rgba(8,13,28,.78);--line:rgba(255,255,255,.14);--accent:#ffb703;--blue:#35a7ff;--pink:#ff4d8d;--green:#6ee7a2}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -92,13 +92,20 @@
 @media(pointer:fine) and (min-width:901px){#joy,#look{display:none!important}}
 @media(max-height:450px){#joy,#look{width:88px;height:88px;bottom:12px}#joy{left:10px}#look.look{width:88px;height:88px;bottom:12px;right:10px}#fire{right:111px;bottom:25px;width:58px;height:58px}#sprint{left:110px;bottom:25px;width:48px;height:48px}#joy:after,#look:after{height:38px;width:38px;margin:-19px 0 0 -19px}}
 @media(max-width:380px){#joy,#look{width:103px;height:103px;bottom:16px}#look.look{width:103px;height:103px;bottom:16px}#fire{right:29px;bottom:148px}}
+
+.foam-feedback{order:10;margin:13px 0 0;border-top:1px solid #ffcf6566;padding:16px 0 0}
+.foam-feedback summary{font-size:13px;color:#ffcf65;font-weight:1000;cursor:pointer;padding:7px 0}
+.foam-feedback p{font-size:12px;line-height:1.5;color:#b9c8e5}
+.foam-feedback textarea{display:block;width:100%;min-height:89px;padding:11px;border-radius:10px;border:1px solid #ffcf6588;background:#111a31;color:#fff;font:15px/1.4 system-ui;resize:vertical}
+.foam-feedback .submit{display:block;margin-top:9px;padding:12px;text-align:center;background:#ffcf65;color:#15141e;font-weight:1000;border-radius:11px;text-decoration:none;font-size:13px}
+.foam-feedback .status{font-size:12px;color:#ffdf97;margin-top:9px;min-height:17px}
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 <div class="hud">
   <div class="topbar">
-    <div class="panel brand"><b>CHASE'S FOAM BLASTER</b><span>SHANX ARCADE LAB · CHASE'S IDEA</span></div>
+    <div class="panel brand"><b>FOAM BLASTER</b><span>SHANX ARCADE LAB · CHASE'S IDEA</span></div>
     <div class="panel stats">
       <div class="chip"><b id="score">0</b><span>Tags</span></div>
       <div class="chip"><b id="ammo">30</b><span>Darts</span></div>
@@ -120,7 +127,7 @@
 <div id="start" class="start">
   <div class="card">
     <span class="tag">SHANX ARCADE LAB · CHASE'S ORIGINAL IDEA</span>
-    <h1>CHASE'S <em>FOAM BLASTER.</em></h1>
+    <h1><em>FOAM BLASTER.</em></h1>
     <p class="sub">Chase imagined the battle. We made it playable. Pick a map, choose your foam-bot difficulty, and jump into the arena.</p>
     <div class="grid">
       <div class="feature"><b>🗺️ 3 Maps</b><span>Foam City, Backyard Forts and Warehouse Rush each have a different layout.</span></div>
@@ -130,6 +137,7 @@
     <div class="difficultyLabel">Bot Difficulty</div><div class="difficulty"><button class="diffbtn" data-diff="easy">EASY</button><button class="diffbtn active" data-diff="normal">NORMAL</button><button class="diffbtn" data-diff="hard">HARD</button><button class="diffbtn" data-diff="insane">INSANE</button></div><div class="mapLabel">Choose Map</div><div class="maps"><button class="mapbtn active" data-map="city">FOAM CITY</button><button class="mapbtn" data-map="backyard">BACKYARD FORTS</button><button class="mapbtn" data-map="warehouse">WAREHOUSE RUSH</button></div><button id="startBtn" class="startbtn">ENTER FOAM CITY · NORMAL</button>
     <div class="controls">Desktop: WASD + mouse + click. Tablet/phone: LEFT joystick moves, RIGHT joystick turns and looks up or down, FIRE shoots.</div>
     <div class="note">Experimental foam-bot game inspired by Chase. Alpha build with stylized game artwork.</div>
+<details class="foam-feedback" id="foamFeedback"><summary>💌 FEEDBACK / SUGGEST A CHANGE</summary><p>What would make Foam Blaster more fun? Tell us about maps, robots, controls, or things not working. Parents and grown-ups can send ideas through their email app. Please don't include children's personal information. Sending email reveals your email address, so it is not anonymous.</p><textarea id="foamFeedbackText" placeholder="For example: More robot colors, bigger arenas, or different maps..." maxlength="1200"></textarea><a class="submit" id="foamFeedbackSend" href="mailto:henry.shannon@shanxservices.com?subject=Foam%20Blaster%20Feedback">✉️ EMAIL MY FEEDBACK ↗</a><div class="status" id="foamFeedbackStatus" role="status" aria-live="polite"></div></details>
     <a class="lab-return" href="../index.html">← BACK TO ARCADE LAB</a>
   </div>
 </div>
@@ -227,8 +235,22 @@ $('fire').addEventListener('pointerdown',e=>{e.preventDefault();fire()});$('spri
 document.querySelectorAll('.diffbtn').forEach(btn=>btn.addEventListener('click',()=>{difficulty=btn.dataset.diff;diff=DIFFICULTIES[difficulty];document.querySelectorAll('.diffbtn').forEach(b=>b.classList.toggle('active',b===btn));updateStartButton()}));
 document.querySelectorAll('.mapbtn').forEach(btn=>btn.addEventListener('click',()=>chooseMap(btn.dataset.map)));
 updateStartButton();
+
+// Feedback goes to an email draft; the user sends it manually.
+const foamFeedbackText=$('foamFeedbackText'),foamFeedbackSend=$('foamFeedbackSend'),foamFeedbackStatus=$('foamFeedbackStatus');
+function foamFeedbackUrl(){
+  const subject='Foam Blaster: Game feedback';
+  const body='Hello! Here is my suggestion for Foam Blaster.\n\nMap: '+MAPS[mapKey].label+'\nDifficulty: '+diff.label+'\n\nSuggestion:\n'+foamFeedbackText.value.trim();
+  return 'mailto:henry.shannon@shanxservices.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+}
+foamFeedbackText.addEventListener('input',()=>{foamFeedbackSend.href=foamFeedbackUrl();foamFeedbackStatus.textContent=''});
+foamFeedbackSend.addEventListener('click',e=>{
+ if(!foamFeedbackText.value.trim()){e.preventDefault();foamFeedbackText.focus();foamFeedbackStatus.textContent='Write a suggestion first.';return}
+ foamFeedbackStatus.textContent='Your email app should open a draft. Press Send there to deliver it.';
+});
+foamFeedbackSend.href=foamFeedbackUrl();
 $('startBtn').addEventListener('click',()=>{$('start').style.display='none';running=true;lookPitch=0;touchMoveX=touchMoveY=touchLookX=touchLookY=0;last=performance.now();toast(`${MAPS[mapKey].label} · ${diff.label} BOTS — GO!`);requestAnimationFrame(loop)});
-if(new URLSearchParams(location.search).has("arcadeQA"))window.__arcadeQA=()=>({running,playerX:player.x,playerY:player.y,yaw:player.a,pitch:lookPitch,moveX:touchMoveX,moveY:touchMoveY,lookX:touchLookX,lookY:touchLookY});
+if(new URLSearchParams(location.search).has("arcadeQA"))window.__arcadeQA=()=>({running,playerX:player.x,playerY:player.y,yaw:player.a,pitch:lookPitch,moveX:touchMoveX,moveY:touchMoveY,lookX:touchLookX,lookY:touchLookY,feedbackDraft:foamFeedbackUrl(),map:mapKey,difficulty});
 // Demo preview behind start screen
 function preview(){if(running)return;player.a+=.002;render();if(!new URLSearchParams(location.search).has('test'))requestAnimationFrame(preview)}preview();
 })();
