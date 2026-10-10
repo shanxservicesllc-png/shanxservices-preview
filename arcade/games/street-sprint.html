@@ -81,7 +81,7 @@
       <p class="sub">Race the night. Dodge traffic. Grab glowing energy bolts. Every second gets faster.</p>
       <div class="arcade-details"><span>FAST ARCADE</span><span>ONE MORE RUN</span><span>HIGH SCORES</span></div>
       <button class="big" id="startBtn">START YOUR RUN →</button>
-      <div class="hint">Phone/tablet: drag anywhere to steer. Keyboard: ← → or A D. Collect green bolts. Avoid traffic.</div>
+      <div class="hint">Phone/tablet: gently drag left or right to steer smoothly. Keyboard: ← → or A D. Collect green bolts. Avoid traffic.</div>
       <a class="lab-return" href="../index.html">← BACK TO ARCADE LAB</a>
     </div>
   </div>
@@ -103,7 +103,7 @@
   let W=0,H=0,dpr=1,raf=0,last=0,running=false,paused=false,gameOver=false;
   const laneCount=4;
   const road={left:0,right:0,width:0,laneW:0};
-  const input={left:false,right:false,pointer:false,targetX:null};
+  const input={left:false,right:false,pointer:false,targetX:null,downX:0,downCarX:0,pointerId:null};
   const player={x:0,y:0,w:38,h:68,vx:0};
   function loadBest(){ try { return Number(localStorage.getItem('has2_street_sprint_best')||0); } catch { return 0; } }
   function saveBest(v){ try { localStorage.setItem('has2_street_sprint_best',String(v)); } catch {} }
@@ -122,7 +122,7 @@
 
   function reset(){
     traffic=[];bolts=[];particles=[];score=0;distance=0;combo=0;speed=300;spawnClock=.7;boltClock=1.4;gameOver=false;paused=false;
-    player.x=W/2-player.w/2;player.vx=0;input.targetX=null;
+    player.x=W/2-player.w/2;player.vx=0;input.targetX=null;input.pointer=false;input.pointerId=null;
     scoreEl.textContent='0'; speedEl.textContent='1.0x'; pauseBtn.textContent='Pause';
   }
   function start(){reset();running=true;overlay.style.display='none';last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
@@ -150,9 +150,12 @@
     distance+=speed*dt; speed=Math.min(720,300+distance*.012); const mult=speed/300; speedEl.textContent=mult.toFixed(1)+'x';
     score+=dt*10*mult*(1+combo*.06); scoreEl.textContent=Math.floor(score);
 
-    const steer=720;
-    if(input.targetX!=null){const center=player.x+player.w/2;const delta=input.targetX-center;player.vx=Math.max(-steer,Math.min(steer,delta*7));}
-    else player.vx=(input.left?-steer:0)+(input.right?steer:0);
+    // Smooth touch controls: relative drag, reduced gain, capped speed, eased acceleration.
+    const steer=490, touchMax=250;
+    let desired=0;
+    if(input.targetX!=null){const center=player.x+player.w/2,delta=input.targetX-center;desired=Math.max(-touchMax,Math.min(touchMax,delta*2.8));}
+    else desired=(input.left?-steer:0)+(input.right?steer:0);
+    player.vx+=(desired-player.vx)*Math.min(1,dt*8);
     player.x+=player.vx*dt; player.x=Math.max(road.left+6,Math.min(road.right-player.w-6,player.x));
 
     spawnClock-=dt; if(spawnClock<=0){spawnTraffic();spawnClock=Math.max(.28,.95-mult*.14)+Math.random()*.38}
@@ -179,11 +182,13 @@
   function draw(){
     ctx.clearRect(0,0,W,H);
     const grd=ctx.createLinearGradient(0,0,0,H);grd.addColorStop(0,'#111827');grd.addColorStop(1,'#070a10');ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#12161d';ctx.fillRect(road.left,0,road.width,H);
+    const backdrop=ctx.createLinearGradient(0,0,W,H);backdrop.addColorStop(0,'#0d2734');backdrop.addColorStop(.5,'#0a1721');backdrop.addColorStop(1,'#1b1124');ctx.fillStyle=backdrop;
+for(let i=0;i<20;i++){const side=i%2===0?-1:1;const rank=Math.floor(i/2),h=34+((i*37)%110),gap=12+rank*27,x=side<0?road.left-22-gap:road.right+16+gap;const bw=16+((i*19)%28),by=H-h+((i*23)%43);ctx.fillRect(x,by,bw,h);ctx.fillStyle='rgba(245,199,96,.47)';for(let j=0;j<3;j++)ctx.fillRect(x+4,by+10+j*16,3,4);ctx.fillStyle=backdrop;}
+ctx.fillStyle='#12161d';ctx.fillRect(road.left,0,road.width,H);
     ctx.fillStyle='#252b35';ctx.fillRect(road.left-9,0,9,H);ctx.fillRect(road.right,0,9,H);
     ctx.strokeStyle='#e7edf455';ctx.lineWidth=2;ctx.setLineDash([28,28]);ctx.lineDashOffset=distance%56;
     for(let i=1;i<laneCount;i++){ctx.beginPath();ctx.moveTo(road.left+i*road.laneW,0);ctx.lineTo(road.left+i*road.laneW,H);ctx.stroke()}ctx.setLineDash([]);
-    ctx.fillStyle='#b9ff3b22';ctx.fillRect(road.left,0,3,H);ctx.fillRect(road.right-3,0,3,H);
+    ctx.fillStyle='#b9ff3b22';ctx.fillRect(road.left,0,3,H);ctx.fillRect(road.right-3,0,3,H);ctx.save();ctx.shadowColor='#d7ff53';ctx.shadowBlur=14;ctx.fillStyle='#d7ff5366';ctx.fillRect(road.left,0,2,H);ctx.fillRect(road.right-2,0,2,H);ctx.restore();
     for(const b of bolts){const r=b.r*(1+.14*Math.sin(b.pulse));ctx.beginPath();ctx.arc(b.x,b.y,r,0,Math.PI*2);ctx.fillStyle='#b9ff3b';ctx.shadowColor='#b9ff3b';ctx.shadowBlur=20;ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#071008';ctx.font=`900 ${Math.max(10,r)}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⚡',b.x,b.y+1)}
     for(const t of traffic)drawCar(t.x,t.y,t.w,t.h,`hsl(${t.hue} 70% 55%)`);
     drawCar(player.x,player.y,player.w,player.h,'#f7f8fb',true);
@@ -195,15 +200,34 @@
   }
 
   function pointerX(e){const r=canvas.getBoundingClientRect();return e.clientX-r.left}
-  canvas.addEventListener('pointerdown',e=>{input.pointer=true;input.targetX=pointerX(e);canvas.setPointerCapture?.(e.pointerId)});
-  canvas.addEventListener('pointermove',e=>{if(input.pointer)input.targetX=pointerX(e)});
-  canvas.addEventListener('pointerup',()=>{input.pointer=false;input.targetX=null});
-  canvas.addEventListener('pointercancel',()=>{input.pointer=false;input.targetX=null});
+  canvas.addEventListener("pointerdown",e=>{
+    if(!running||input.pointer)return;
+    input.pointer=true;input.pointerId=e.pointerId;
+    input.downX=pointerX(e);input.downCarX=player.x+player.w/2;
+    input.targetX=input.downCarX;
+    try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+    e.preventDefault();
+  },{passive:false});
+  canvas.addEventListener("pointermove",e=>{
+    if(!input.pointer||e.pointerId!==input.pointerId)return;
+    const drag=pointerX(e)-input.downX;
+    input.targetX=Math.max(road.left+player.w/2+6,Math.min(road.right-player.w/2-6,input.downCarX+drag*.70));
+    e.preventDefault();
+  },{passive:false});
+  function clearSteering(e){
+    if(e&&e.pointerId!==input.pointerId)return;
+    input.pointer=false;input.pointerId=null;input.targetX=null;
+  }
+  canvas.addEventListener("pointerup",clearSteering);
+  canvas.addEventListener("pointercancel",clearSteering);
+  canvas.addEventListener("lostpointercapture",clearSteering);
+  window.addEventListener("blur",()=>clearSteering(null));
   window.addEventListener('keydown',e=>{if(['ArrowLeft','a','A'].includes(e.key))input.left=true;if(['ArrowRight','d','D'].includes(e.key))input.right=true;if(e.key===' '){e.preventDefault();togglePause()}});
   window.addEventListener('keyup',e=>{if(['ArrowLeft','a','A'].includes(e.key))input.left=false;if(['ArrowRight','d','D'].includes(e.key))input.right=false});
   function togglePause(){if(!running)return;paused=!paused;pauseBtn.textContent=paused?'Resume':'Pause'}
   startBtn.addEventListener('click',start);restartBtn.addEventListener('click',start);pauseBtn.addEventListener('click',togglePause);
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)togglePause()});
+  if(new URLSearchParams(location.search).has("arcadeQA"))window.__arcadeQA=()=>({running,x:player.x,center:player.x+player.w/2,vx:player.vx,pointer:input.pointer,targetX:input.targetX,downX:input.downX});
   draw();
 })();
 </script>
