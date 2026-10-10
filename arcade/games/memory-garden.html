@@ -36,7 +36,9 @@ select{color:#fff;background:#243e2d;border:1px solid #e7d29188;border-radius:12
 .meter span{display:block;height:100%;background:linear-gradient(90deg,#85eeb1,#f6cf7c);width:0%;transition:width .18s}
 #message{text-align:center;padding:15px 14px 0;min-height:46px;font-weight:800;color:#e2f3e4}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;padding:18px 20px 22px}
-.cards.medium,.cards.challenge{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cards.warmup,.cards.medium,.cards.challenge{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cards.advanced{grid-template-columns:repeat(5,minmax(0,1fr))}
+.cards.expert{grid-template-columns:repeat(6,minmax(0,1fr))}
 .card{width:100%;aspect-ratio:1.08;min-height:0;border-radius:19px;border:2px solid #a2e8bd77;background:linear-gradient(130deg,#3b7352,#25553e);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#ffefb7;touch-action:manipulation;transition:background .16s,transform .12s}
 .card:active:not(:disabled){transform:scale(.97)}
 .back{font-weight:1000;font-size:clamp(41px,9vw,66px);line-height:1;text-shadow:0 3px 18px #0005}
@@ -78,7 +80,8 @@ header{padding:8px 9px 22px}header p{font-size:15px}
 .control{padding:9px 6px;font-size:13px}
 .status{padding:15px 13px 0}.status strong{font-size:18px}.meter{margin:12px 13px 0}
 .cards{gap:8px;padding:15px 10px 19px}
-.cards.medium,.cards.challenge{gap:7px}
+.cards.warmup,.cards.medium,.cards.challenge,.cards.advanced,.cards.expert{gap:7px}
+.cards.advanced,.cards.expert{grid-template-columns:repeat(4,minmax(0,1fr))}
 .card{border-radius:12px}
 .back{font-size:clamp(28px,10vw,52px)}
 .front .emoji{font-size:clamp(24px,9vw,43px)}
@@ -94,9 +97,12 @@ header{padding:8px 9px 22px}header p{font-size:15px}
 <section class="game" aria-label="Memory matching game">
 <div class="toolbar">
 <fieldset><label for="level">CHOOSE YOUR GARDEN</label><select id="level">
-<option value="easy">🌱 Easy · 6 cards (3 pairs)</option>
-<option value="medium" selected>🌻 Growing · 12 cards (6 pairs)</option>
-<option value="challenge">🌺 Blooming · 16 cards (8 pairs)</option>
+<option value="easy">🌱 Easy · 6 cards</option>
+<option value="warmup">🍀 Gentle · 8 cards</option>
+<option value="medium" selected>🌻 Growing · 12 cards</option>
+<option value="challenge">🌺 Blooming · 16 cards</option>
+<option value="advanced">🌷 Advanced · 20 cards</option>
+<option value="expert">🌟 Expert · 24 cards</option>
 </select></fieldset>
 <div class="controls"><button class="control" id="peek" type="button">👀 Show Me Again</button><button class="control primary" id="new" type="button">↻ New Game</button></div>
 </div>
@@ -106,11 +112,11 @@ header{padding:8px 9px 22px}header p{font-size:15px}
 <div id="cards" class="cards" aria-label="Matching cards"></div>
 <div class="win" id="win" hidden><h2>🌼 Beautifully Done! 🌼</h2><p id="winText">You matched all the pairs!</p><button class="control primary" id="next" type="button">Play Another Round ↗</button></div>
 </section>
-<div class="instructions"><strong>How to play:</strong> Tap one card and then another. If they match, they stay face-up! If you forget where something is, press <strong>Show Me Again</strong> to peek at all the cards. No time limit and no penalties.</div>
+<div class="instructions"><strong>How to play:</strong> Tap two cards to find a pair. Choose 6, 8, 12, 16, 20, or 24 cards. <strong>Show Me Again</strong> gives you a peek, but it gets shorter as you choose harder levels. Expert (24 cards) has no peeks. No countdown and no penalties.</div>
 <section class="feedback" id="feedback" aria-labelledby="feedbackTitle">
 <div class="feedback-tag">💌 HELP THIS GARDEN GROW</div>
 <h2 id="feedbackTitle">Tell us what you'd change!</h2>
-<p>More cards? Bigger pictures? A different challenge? Your ideas help us make the game better.</p>
+<p>More cards? Bigger pictures? A different challenge? Your ideas help us make the game better. You can share your thoughts without including your name.</p>
 <div class="feedback-grid">
 <div><label for="feedbackKind">WHAT'S YOUR IDEA ABOUT?</label>
 <select id="feedbackKind">
@@ -140,7 +146,8 @@ const bank=[
 {icon:'🌸',name:'Flower'},{icon:'🐝',name:'Bee'},
 {icon:'🍇',name:'Grapes'},{icon:'🐦',name:'Bird'}
 ];
-const levels={easy:3,medium:6,challenge:8};
+const levels={easy:3,warmup:4,medium:6,challenge:8,advanced:10,expert:12};
+const peekDuration={easy:3000,warmup:2500,medium:1800,challenge:950,advanced:450,expert:0};
 const level=document.getElementById('level'),grid=document.getElementById('cards'),peek=document.getElementById('peek');
 const message=document.getElementById('message'),found=document.getElementById('found');
 const win=document.getElementById('win'),fill=document.getElementById('fill'),progress=document.getElementById('progress');
@@ -175,7 +182,9 @@ buttons[i].className='card'+(item.matched?' matched':item.preview?' preview':ite
 buttons[i].setAttribute('aria-label','Card '+(i+1)+': '+(opened?item.name:'face down')+(item.matched?', matched':''));
 buttons[i].disabled=locked||item.matched||item.open;
 });
-peek.disabled=locked||matched===deck.length/2;
+const peekMs=peekDuration[level.value];
+peek.textContent=peekMs===0?'🚫 No Peeks on Expert':'👀 Show Me Again · '+(peekMs/1000).toFixed(peekMs%1000===0?0:2)+'s';
+peek.disabled=locked||matched===deck.length/2||peekMs===0;
 }
 function begin(){
 cancel();matched=0;selected=[];locked=false;win.hidden=true;
@@ -203,10 +212,11 @@ later(()=>{deck[a].open=false;deck[b].open=false;selected=[];locked=false;paint(
 paint();
 }
 function showAgain(){
-if(locked||matched===deck.length/2)return;
+const ms=peekDuration[level.value];
+if(locked||matched===deck.length/2||ms===0)return;
 cancel();locked=true;selected=[];deck.forEach(x=>{x.open=false;x.preview=!x.matched});
 say('Take a good look. No rush. 👀');paint();
-later(()=>{deck.forEach(x=>x.preview=false);locked=false;paint();say('Ready? Find your matching pictures.');},3000);
+later(()=>{deck.forEach(x=>x.preview=false);locked=false;paint();say('Ready? Find your matching pictures.');},ms);
 }
 // Feedback stays private. The email application requires the player to press Send.
 const feedbackText=document.getElementById('feedbackText'),feedbackKind=document.getElementById('feedbackKind');
