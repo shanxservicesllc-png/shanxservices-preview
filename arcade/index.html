@@ -14,10 +14,10 @@ a{color:inherit;text-decoration:none}.shell{width:min(1200px,92%);margin-inline:
 nav{border-bottom:1px solid #ffffff21;background:#080c14e8;backdrop-filter:blur(16px);position:sticky;top:0;z-index:20}.nav-in{height:76px;display:flex;gap:16px;align-items:center;justify-content:space-between}.logo{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:900;letter-spacing:.18em}.logo-mark{width:43px;height:43px;display:grid;place-items:center;border:1px solid var(--lime);border-radius:12px;background:#17221b;box-shadow:inset 0 0 18px #c5ed2f2e;color:var(--lime);font-size:19px;font-weight:1000}.nav-links{display:flex;align-items:center;gap:24px;color:#ccd4df;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.nav-links a:hover,.nav-links a:focus-visible{color:var(--lime)}.nav-pill{border:1px solid #ffffff4d;border-radius:100px;padding:11px 15px}
 .hero{position:relative;padding:82px 0 64px}.hero:after{content:"";position:absolute;right:3%;top:12%;width:150px;height:150px;border:1px solid #d7ff533b;transform:rotate(18deg);border-radius:34px;pointer-events:none}.hero-tag,.eyebrow{display:flex;align-items:center;gap:10px;text-transform:uppercase;color:var(--lime);font-size:12px;font-weight:900;letter-spacing:.2em}.hero-tag:before,.eyebrow:before{content:"";display:block;width:24px;height:2px;background:var(--lime)}.hero h1{font-size:clamp(78px,15vw,182px);line-height:.77;margin:25px 0 30px;font-weight:1000;letter-spacing:-.10em;max-width:100%;overflow:visible}.hero h1 span{display:block}.hero h1 .glow{color:var(--lime);text-shadow:0 0 60px #b8e32f44}.hero-bottom{display:flex;gap:32px;justify-content:space-between;align-items:end}.hero-lead{font-size:clamp(17px,2.4vw,23px);color:#c5cad0;line-height:1.5;max-width:610px;margin:0}.hero-aside{min-width:190px;text-align:right;color:#afbbcb;font-size:13px;line-height:1.65}.hero-aside strong{display:block;font-size:36px;line-height:1;color:white;letter-spacing:-.05em}.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:19px 0}.strip-in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:11px;letter-spacing:.16em;font-weight:900;color:#a8b9c5;text-transform:uppercase}.strip em{color:var(--lime);font-style:normal}
 .games{padding:73px 0 100px}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:25px}.section-head h2{font-size:clamp(34px,5vw,64px);line-height:1;margin:13px 0 0;letter-spacing:-.055em}.section-head p{color:#a7b4c1;margin:0;max-width:240px;font-size:13px;line-height:1.55}
-.game-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.game-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
 .game{position:relative;isolation:isolate;background:linear-gradient(150deg,#172029,#0a0d15 65%);border:1px solid #ffffff2e;border-radius:27px;overflow:hidden;min-width:0;box-shadow:0 15px 40px #0006;transition:transform .22s,border-color .22s,box-shadow .22s}
 .game:hover{transform:translateY(-5px);border-color:#d7ff53a0;box-shadow:0 24px 66px #0009}
-.game.gold:hover{border-color:#ffbf55}
+.game.gold:hover{border-color:#ffbf55}.game.garden:hover{border-color:#a6efba}.game.garden .game-media{background:radial-gradient(ellipse at 50% 25%,#306e4b,#0e2318 68%)}.game.garden .game-genre{color:#a5f4c3;border-color:#a5f4c3;background:#0b2016dd}.game.garden .play{background:#a6efba;color:#163320}
 .game-media{position:relative;height:390px;overflow:hidden;background:radial-gradient(ellipse at 60% 30%,#244c3d,#11161d 65%);display:flex;justify-content:center;align-items:center}
 .game.gold .game-media{background:radial-gradient(ellipse at 50% 22%,#78623a,#1a1420 64%)}
 .game-media:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,#0d101a 0%,#0d101a11 26%,transparent 50%);z-index:1}
@@ -34,7 +34,7 @@ nav{border-bottom:1px solid #ffffff21;background:#080c14e8;backdrop-filter:blur(
 .hint{margin-top:16px;font-size:12px;color:#9eabba}
 .lab-note{margin-top:28px;border:1px solid #ffffff26;border-radius:19px;display:flex;align-items:center;gap:21px;padding:23px 25px;background:#0e1420}.lab-mark{width:46px;height:46px;border-radius:14px;background:#d7ff531b;border:1px solid #d7ff53aa;color:var(--lime);display:grid;place-items:center;flex-shrink:0;font-size:24px}.lab-note strong{display:block;margin-bottom:4px}.lab-note p{margin:0;color:#abb9c7;line-height:1.55;font-size:13px}
 footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:#8a9aaa;font-size:12px}.foot a{color:#d7ff53}
-@media(max-width:800px){.hero{padding-top:60px}.hero-aside{display:none}.game-grid{grid-template-columns:1fr}.game-media{height:330px}.nav-links{gap:12px}.section-head{align-items:start;flex-direction:column}}
+@media(max-width:1000px){.game-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:800px){.hero{padding-top:60px}.hero-aside{display:none}.game-grid{grid-template-columns:1fr}.game-media{height:330px}.nav-links{gap:12px}.section-head{align-items:start;flex-direction:column}}
 @media(max-width:520px){.nav-in{height:66px}.logo{font-size:12px}.logo-mark{width:36px;height:36px}.nav-links{font-size:10px}.nav-links .nav-pill{display:none}.hero h1{font-size:clamp(65px,18vw,92px);letter-spacing:-.095em}.hero:after{width:64px;height:64px}.hero-lead{font-size:16px}.strip-in{font-size:9px;gap:10px}.games{padding-top:54px}.game-media{height:295px}.game-info{padding:23px}.game-info p{min-height:0}.game-info h3{font-size:33px}.game-index,.game-genre{top:14px}.game-index{left:14px}.game-genre{right:14px}.lab-note{align-items:start}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
@@ -49,7 +49,7 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 <header class="hero shell">
 <div class="hero-tag">SHANX SERVICES / THE EXPERIMENTAL PLAYGROUND</div>
 <h1><span>ARCADE</span><span class="glow">LAB<span style="color:#fafaf3">.</span></span></h1>
-<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>02</strong>Original playable prototypes<br>Made for the browser</div></div>
+<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>03</strong>Original playable prototypes<br>Made for the browser</div></div>
 </header>
 <div class="strip"><div class="shell strip-in"><span><em>●</em> CLICK TO PLAY</span><span>DESKTOP + MOBILE</span><span>FREE EXPERIMENTS</span><span>NO DOWNLOAD NEEDED</span></div></div>
 <section class="games shell" id="play">
@@ -60,13 +60,19 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 <p>Dodge traffic, grab electric power-ups, and beat your best run while the road keeps getting faster.</p>
 <div class="game-meta"><span>FAST ARCADE</span><span>TOUCH + KEYS</span><span>HIGH SCORE</span></div>
 <a class="play" href="games/street-sprint.html">PLAY STREET SPRINT <span class="arrow" aria-hidden="true">↗</span></a>
-<div class="hint">Swipe or drag to steer. Arrow keys also work.</div></div></article>
+<div class="hint">Drag in any direction to drive. Arrow keys or WASD also work.</div></div></article>
 <article class="game gold"><div class="game-media"><span class="game-index">LEVEL 002</span><span class="game-genre">FOAM-BOT ARENA</span><img src="media/chase-foam-blaster-gameplay.png" alt="Foam Blaster gameplay showing bright low-poly city scenery, blaster, and game HUD" loading="lazy"></div><div class="game-info">
 <h3>Chase's Foam Blaster.</h3>
 <p>Chase had the idea. Now it's a full foam-dart playground: pick a map, choose your bot difficulty, and jump into the action.</p>
 <div class="game-meta"><span>CHASE'S IDEA</span><span>3 MAPS</span><span>TOUCH + KEYS</span></div>
 <a class="play" href="games/chase-foam-blaster.html">PLAY FOAM BLASTER <span class="arrow" aria-hidden="true">↗</span></a>
 <div class="hint">Choose your map and difficulty, then step into the arena.</div></div></article>
+<article class="game garden"><div class="game-media"><span class="game-index">LEVEL 003</span><span class="game-genre">RELAXED MATCHING</span><img src="media/memory-garden-gameplay.png" alt="Real screenshot of Memory Garden matching game with flowers, fruit, and gentle green cards" loading="lazy"></div><div class="game-info">
+<h3>Memory Garden.</h3>
+<p>A friendly picture matching game with colorful cards and three difficulty levels. Big touch controls, helpful hints, and no countdown.</p>
+<div class="game-meta"><span>JUST FOR FUN</span><span>3 LEVELS</span><span>BIG TOUCH CARDS</span></div>
+<a class="play" href="games/memory-garden.html">PLAY MEMORY GARDEN <span class="arrow" aria-hidden="true">↗</span></a>
+<div class="hint">Find the matching pictures at your own pace. Tap Show Me Again for a reminder.</div></div></article>
 </div>
 <div class="lab-note"><span class="lab-mark">✦</span><div><strong>A lab, not a finished-game store.</strong><p>These are experimental alpha builds. They're playable now, and the lab will evolve as we make them better. Gameplay progress and highscores stay in your browser where supported.</p></div></div>
 </section>
