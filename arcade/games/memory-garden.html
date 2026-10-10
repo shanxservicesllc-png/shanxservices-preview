@@ -112,7 +112,7 @@ header{padding:8px 9px 22px}header p{font-size:15px}
 <div id="cards" class="cards" aria-label="Matching cards"></div>
 <div class="win" id="win" hidden><h2>🌼 Beautifully Done! 🌼</h2><p id="winText">You matched all the pairs!</p><button class="control primary" id="next" type="button">Play Another Round ↗</button></div>
 </section>
-<div class="instructions"><strong>How to play:</strong> Tap two cards to find a pair. Choose 6, 8, 12, 16, 20, or 24 cards. <strong>Show Me Again</strong> gives you a peek, but it gets shorter as you choose harder levels. Expert (24 cards) has no peeks. No countdown and no penalties.</div>
+<div class="instructions"><strong>How to play:</strong> Tap two cards to find a pair. Choose 6, 8, 12, 16, 20, or 24 cards. Peek allowances are limited: Easy/Gentle <strong>3</strong>, Growing/Blooming <strong>2</strong>, Advanced <strong>1</strong>. Each peek gets shorter on harder levels. Expert automatically reveals all cards once for 1.5 seconds at the start and has <strong>no extra peeks</strong>. No countdown and no penalties.</div>
 <section class="feedback" id="feedback" aria-labelledby="feedbackTitle">
 <div class="feedback-tag">💌 HELP THIS GARDEN GROW</div>
 <h2 id="feedbackTitle">Tell us what you'd change!</h2>
@@ -148,10 +148,12 @@ const bank=[
 ];
 const levels={easy:3,warmup:4,medium:6,challenge:8,advanced:10,expert:12};
 const peekDuration={easy:3000,warmup:2500,medium:1800,challenge:950,advanced:450,expert:0};
+const peekLimits={easy:3,warmup:3,medium:2,challenge:2,advanced:1,expert:0};
+const expertFirstRevealMs=1500;
 const level=document.getElementById('level'),grid=document.getElementById('cards'),peek=document.getElementById('peek');
 const message=document.getElementById('message'),found=document.getElementById('found');
 const win=document.getElementById('win'),fill=document.getElementById('fill'),progress=document.getElementById('progress');
-let deck=[],selected=[],matched=0,locked=false,generation=0,timeouts=[];
+let deck=[],selected=[],matched=0,locked=false,generation=0,timeouts=[],peeksLeft=2;
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a};
 function later(fn,ms){const id=setTimeout(fn,ms);timeouts.push(id)}
 function cancel(){for(const id of timeouts)clearTimeout(id);timeouts=[];generation++}
@@ -183,14 +185,19 @@ buttons[i].setAttribute('aria-label','Card '+(i+1)+': '+(opened?item.name:'face 
 buttons[i].disabled=locked||item.matched||item.open;
 });
 const peekMs=peekDuration[level.value];
-peek.textContent=peekMs===0?'🚫 No Peeks on Expert':'👀 Show Me Again · '+(peekMs/1000).toFixed(peekMs%1000===0?0:2)+'s';
-peek.disabled=locked||matched===deck.length/2||peekMs===0;
+peek.textContent=peekMs===0?'🚫 No Peeks on Expert':peeksLeft===0?'👀 No Peeks Left':'👀 Peek '+(peekMs/1000).toFixed(peekMs%1000===0?0:2)+'s · '+peeksLeft+' left';
+peek.disabled=locked||matched===deck.length/2||peekMs===0||peeksLeft===0;
 }
 function begin(){
-cancel();matched=0;selected=[];locked=false;win.hidden=true;
+cancel();matched=0;selected=[];locked=false;peeksLeft=peekLimits[level.value];win.hidden=true;
 const choices=shuffle(bank.slice()).slice(0,levels[level.value]);
 deck=shuffle(choices.flatMap((item,pair)=>[{...item,pair,open:false,matched:false,preview:false},{...item,pair,open:false,matched:false,preview:false}]));
-display();update();say('Take your time. Choose any two cards.');paint();
+display();update();
+if(level.value==='expert'){
+  locked=true;deck.forEach(x=>x.preview=true);
+  say('Expert preview! Remember the pictures before they disappear. 🌟');paint();
+  later(()=>{deck.forEach(x=>x.preview=false);locked=false;paint();say('Now find the pairs. No extra peeks on Expert!');},expertFirstRevealMs);
+}else{say('Take your time. Choose any two cards. '+peeksLeft+' peeks available.');paint();}
 }
 function choose(index){
 if(locked)return;
@@ -213,10 +220,10 @@ paint();
 }
 function showAgain(){
 const ms=peekDuration[level.value];
-if(locked||matched===deck.length/2||ms===0)return;
-cancel();locked=true;selected=[];deck.forEach(x=>{x.open=false;x.preview=!x.matched});
+if(locked||matched===deck.length/2||ms===0||peeksLeft<=0)return;
+peeksLeft--;cancel();locked=true;selected=[];deck.forEach(x=>{x.open=false;x.preview=!x.matched});
 say('Take a good look. No rush. 👀');paint();
-later(()=>{deck.forEach(x=>x.preview=false);locked=false;paint();say('Ready? Find your matching pictures.');},ms);
+later(()=>{deck.forEach(x=>x.preview=false);locked=false;paint();say('Ready? Find your matching pictures. '+(peeksLeft>0?peeksLeft+' peeks left.':'No peeks left.'));},ms);
 }
 // Feedback stays private. The email application requires the player to press Send.
 const feedbackText=document.getElementById('feedbackText'),feedbackKind=document.getElementById('feedbackKind');
@@ -248,7 +255,7 @@ document.getElementById('next').addEventListener('click',begin);
 level.addEventListener('change',begin);
 peek.addEventListener('click',showAgain);
 if(new URLSearchParams(location.search).has('arcadeQA'))window.__gardenQA={
-state:()=>({level:level.value,matched,selected:selected.slice(),locked,cards:deck.map(c=>({...c})),status:message.textContent}),
+state:()=>({level:level.value,matched,selected:selected.slice(),locked,peeksLeft,peekDisabled:peek.disabled,peekLabel:peek.textContent,cards:deck.map(c=>({...c})),status:message.textContent}),
 click:i=>choose(i),preview:showAgain,newGame:begin,feedbackDraft:feedbackMailto
 };
 begin();
