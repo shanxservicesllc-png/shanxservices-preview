@@ -37,6 +37,24 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 @media(max-width:1000px){.game-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:800px){.hero{padding-top:60px}.hero-aside{display:none}.game-grid{grid-template-columns:1fr}.game-media{height:330px}.nav-links{gap:12px}.section-head{align-items:start;flex-direction:column}}
 @media(max-width:520px){.nav-in{height:66px}.logo{font-size:12px}.logo-mark{width:36px;height:36px}.nav-links{font-size:10px}.nav-links .nav-pill{display:none}.hero h1{font-size:clamp(65px,18vw,92px);letter-spacing:-.095em}.hero:after{width:64px;height:64px}.hero-lead{font-size:16px}.strip-in{font-size:9px;gap:10px}.games{padding-top:54px}.game-media{height:295px}.game-info{padding:23px}.game-info p{min-height:0}.game-info h3{font-size:33px}.game-index,.game-genre{top:14px}.game-index{left:14px}.game-genre{right:14px}.lab-note{align-items:start}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Isolated game-only arcade catalog */
+.mini-arcade{border-top:1px solid #ffffff29;margin-top:42px;padding-top:46px}
+.mini-head{display:flex;gap:15px;align-items:end;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap}
+.mini-head h2{margin:8px 0 6px;font-size:clamp(35px,5vw,54px);letter-spacing:-.06em}
+.mini-head p{margin:0;color:#b8c8c9;font-size:14px;max-width:670px;line-height:1.6}
+.mini-open{display:inline-flex;padding:14px 19px;border-radius:12px;border:1px solid #cde4b47a;color:#d8ffad;font-weight:1000;font-size:13px;letter-spacing:.04em}
+.micro-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.micro-tile{display:flex;align-items:flex-start;flex-direction:column;gap:9px;min-height:220px;background:linear-gradient(150deg,#20382e,#111a18 70%);border:1px solid #cce0b54f;border-radius:19px;padding:15px;position:relative;transition:transform .16s,border-color .16s}
+.micro-tile:hover{transform:translateY(-3px);border-color:#c9eea5}
+.micro-number{color:#a5c1b0;font-size:11px;font-weight:900;letter-spacing:.13em}
+.micro-emoji{font-size:39px;line-height:1.2}
+.micro-tile strong{font-size:17px;color:#f8f8eb;line-height:1.15}
+.micro-tile small{font-size:12px;color:#b3c5bb;line-height:1.45;flex:1}
+.micro-play{font-size:12px;color:#c7fc9b;letter-spacing:.07em;font-weight:1000}
+@media(max-width:1050px){.micro-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:750px){.micro-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:510px){.micro-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.micro-tile{min-height:190px;padding:13px}.micro-emoji{font-size:30px}.micro-tile strong{font-size:15px}.micro-tile small{font-size:11px}.mini-arcade{padding-top:29px}.mini-open{width:100%;justify-content:center}}
 </style>
 </head>
 <body>
@@ -49,7 +67,7 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 <header class="hero shell">
 <div class="hero-tag">SHANX SERVICES / THE EXPERIMENTAL PLAYGROUND</div>
 <h1><span>ARCADE</span><span class="glow">LAB<span style="color:#fafaf3">.</span></span></h1>
-<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>03</strong>Original playable prototypes<br>Made for the browser</div></div>
+<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>18</strong>Playable arcade challenges<br>Made for the browser</div></div>
 </header>
 <div class="strip"><div class="shell strip-in"><span><em>●</em> CLICK TO PLAY</span><span>DESKTOP + MOBILE</span><span>FREE EXPERIMENTS</span><span>NO DOWNLOAD NEEDED</span></div></div>
 <section class="games shell" id="play">
@@ -69,11 +87,26 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 <div class="hint">Choose your map and difficulty, then step into the arena.</div></div></article>
 <article class="game garden"><div class="game-media"><span class="game-index">LEVEL 003</span><span class="game-genre">RELAXED MATCHING</span><img src="media/memory-garden-gameplay.png" alt="Real screenshot of Memory Garden matching game with flowers, fruit, and gentle green cards" loading="lazy"></div><div class="game-info">
 <h3>Memory Garden.</h3>
-<p>A friendly picture matching game with colorful cards and three difficulty levels. Big touch controls, helpful hints, and no countdown.</p>
-<div class="game-meta"><span>JUST FOR FUN</span><span>3 LEVELS</span><span>BIG TOUCH CARDS</span></div>
+<p>A gentle picture-matching challenge with six card-count choices, limited peeks, and no countdown. Play at your own pace.</p>
+<div class="game-meta"><span>JUST FOR FUN</span><span>6 LEVELS</span><span>BIG TOUCH CARDS</span></div>
 <a class="play" href="games/memory-garden.html">PLAY MEMORY GARDEN <span class="arrow" aria-hidden="true">↗</span></a>
 <div class="hint">Find the matching pictures at your own pace. Tap Show Me Again for a reminder.</div></div></article>
 </div>
+<section class="mini-arcade" id="classics" aria-labelledby="miniHeadline"><div class="mini-head"><div><div class="eyebrow">15 EXTRA ARCADE CHALLENGES</div><h2 id="miniHeadline">The Micro Arcade.</h2><p>Fifteen independently playable retro-inspired games, rescued from our existing H2 Auto Game Mode and repackaged without the automotive app. Each has adjustable speed, difficulty, touch controls, and player suggestions.</p></div><a class="mini-open" href="games/classic-arcade.html">OPEN THE WHOLE ARCADE ↗</a></div><div class="micro-grid"><a class="micro-tile" href="games/classic-arcade.html?game=pong" aria-label="Play Paddle Duel"><span class="micro-number">004</span><span class="micro-emoji" aria-hidden="true">🏓</span><strong>Paddle Duel</strong><small>Beat a quick-thinking rival.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=blockBreaker" aria-label="Play Brick Burst"><span class="micro-number">005</span><span class="micro-emoji" aria-hidden="true">🧱</span><strong>Brick Burst</strong><small>Shatter the wall of bricks.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=tetris" aria-label="Play Block Stacker"><span class="micro-number">006</span><span class="micro-emoji" aria-hidden="true">🧩</span><strong>Block Stacker</strong><small>Stack and clear falling blocks.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=spaceInvaders" aria-label="Play Star Defenders"><span class="micro-number">007</span><span class="micro-emoji" aria-hidden="true">👾</span><strong>Star Defenders</strong><small>Stop the incoming swarm.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=pacman" aria-label="Play Maze Munch"><span class="micro-number">008</span><span class="micro-emoji" aria-hidden="true">🟡</span><strong>Maze Munch</strong><small>Collect dots, outrun ghosts.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=snake" aria-label="Play Neon Snake"><span class="micro-number">009</span><span class="micro-emoji" aria-hidden="true">🐍</span><strong>Neon Snake</strong><small>Grow longer, avoid the walls.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=asteroids" aria-label="Play Meteor Drift"><span class="micro-number">010</span><span class="micro-emoji" aria-hidden="true">☄️</span><strong>Meteor Drift</strong><small>Fly past dangerous space rocks.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=frogger" aria-label="Play Crossing Quest"><span class="micro-number">011</span><span class="micro-emoji" aria-hidden="true">🐸</span><strong>Crossing Quest</strong><small>Time your crossing.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=roadRacer" aria-label="Play Road Dash"><span class="micro-number">012</span><span class="micro-emoji" aria-hidden="true">🏎️</span><strong>Road Dash</strong><small>Dodge the highway traffic.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=flappy" aria-label="Play Wing Hop"><span class="micro-number">013</span><span class="micro-emoji" aria-hidden="true">🐥</span><strong>Wing Hop</strong><small>Flap through tight gaps.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=spaceShooter" aria-label="Play Galaxy Blaster"><span class="micro-number">014</span><span class="micro-emoji" aria-hidden="true">🚀</span><strong>Galaxy Blaster</strong><small>Defend against flying targets.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=helicopter" aria-label="Play Heli Escape"><span class="micro-number">015</span><span class="micro-emoji" aria-hidden="true">🚁</span><strong>Heli Escape</strong><small>Fly low and stay alive.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=lunarLander" aria-label="Play Moon Landing"><span class="micro-number">016</span><span class="micro-emoji" aria-hidden="true">🌙</span><strong>Moon Landing</strong><small>Touch down softly.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=pinball" aria-label="Play Neon Pinball"><span class="micro-number">017</span><span class="micro-emoji" aria-hidden="true">🎱</span><strong>Neon Pinball</strong><small>Keep the ball in play.</small><span class="micro-play">PLAY NOW ↗</span></a>
+<a class="micro-tile" href="games/classic-arcade.html?game=targetRange" aria-label="Play Quick Target"><span class="micro-number">018</span><span class="micro-emoji" aria-hidden="true">🎯</span><strong>Quick Target</strong><small>Hit the target before it escapes.</small><span class="micro-play">PLAY NOW ↗</span></a></div></section>
 <div class="lab-note"><span class="lab-mark">✦</span><div><strong>A lab, not a finished-game store.</strong><p>These are experimental alpha builds. They're playable now, and the lab will evolve as we make them better. Gameplay progress and highscores stay in your browser where supported.</p></div></div>
 </section>
 </main>
