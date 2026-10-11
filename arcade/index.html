@@ -55,23 +55,47 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 @media(max-width:1050px){.micro-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:750px){.micro-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:510px){.micro-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.micro-tile{min-height:190px;padding:13px}.micro-emoji{font-size:30px}.micro-tile strong{font-size:15px}.micro-tile small{font-size:11px}.mini-arcade{padding-top:29px}.mini-open{width:100%;justify-content:center}}
+
+/* Separate existing 2D classics from the new true-WebGL 3D game lane */
+.three-d-arcade{margin-top:42px;padding:30px 0 8px;border-top:2px solid #ffe39b6c;scroll-margin-top:20px}
+.three-d-head{display:flex;align-items:end;justify-content:space-between;gap:13px;flex-wrap:wrap;margin-bottom:21px}
+.three-d-head .eyebrow{color:#ffe0a0}
+.three-d-head h2{font-size:clamp(38px,6vw,63px);margin:6px 0;letter-spacing:-.06em;color:#f7f5e7}
+.three-d-head h2 em{font-style:normal;color:#ffe1a3}
+.three-d-head p{font-size:14px;color:#b5cbd2;max-width:680px;line-height:1.6;margin:0}
+.three-d-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(250px,.8fr);gap:17px}
+.three-d-feature{display:grid;grid-template-columns:45% 1fr;gap:18px;min-height:248px;background:linear-gradient(120deg,#233b37,#172529);border:1px solid #e9cf8b88;padding:16px;border-radius:21px;align-items:center}
+.three-d-feature img{width:100%;height:220px;object-fit:cover;border-radius:12px;border:1px solid #cbe7af80;background:#07111c}
+.three-d-feature .label{color:#f7dc91;font-size:11px;letter-spacing:.12em;font-weight:950}
+.three-d-feature h3{font-size:clamp(27px,3.2vw,37px);letter-spacing:-.065em;line-height:1.05;margin:10px 0 8px}
+.three-d-feature p{font-size:13px;color:#c6d7cf;line-height:1.6;margin:0 0 13px}
+.three-d-feature a{display:inline-block;padding:13px 17px;background:#f9dd93;color:#132119;text-decoration:none;border-radius:10px;font-weight:1000;font-size:12px}
+.three-d-queue{padding:21px;border-radius:21px;background:linear-gradient(130deg,#182932,#0d1b20);border:1px solid #f0dfaa54}
+.three-d-queue .label{color:#e8d29d;font-size:11px;font-weight:950;letter-spacing:.12em}
+.three-d-queue h3{font-size:25px;margin:9px 0;letter-spacing:-.03em}
+.three-d-queue p{margin:0 0 13px;font-size:13px;color:#c6d0d2}
+.three-d-queue ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.three-d-queue li{padding:8px 10px;background:#ffffff0b;border-radius:9px;font-size:13px;color:#e3e9e4}
+.three-d-queue li span{color:#f1d69b;font-size:10px;letter-spacing:.09em;font-weight:950;display:block}
+@media(max-width:780px){.three-d-grid{grid-template-columns:1fr}}
+@media(max-width:490px){.three-d-feature{grid-template-columns:1fr}.three-d-feature img{height:164px}.three-d-head h2{font-size:41px}.three-d-arcade{padding-top:25px}}
 </style>
 </head>
 <body>
 <div class="topline">PUBLIC PREVIEW · ARCADE LAB ALPHA</div>
 <nav><div class="shell nav-in">
 <a class="logo" href="../index.html" aria-label="Back to ShanX Services"><span class="logo-mark">X</span><span>SHANX / ARCADE LAB</span></a>
-<div class="nav-links"><a href="#play">Games</a><a class="nav-pill" href="../index.html">← Main site</a></div>
+<div class="nav-links"><a href="#play">2D Games</a><a href="#arcade3d">3D Games</a><a class="nav-pill" href="../index.html">← Main site</a></div>
 </div></nav>
 <main>
 <header class="hero shell">
 <div class="hero-tag">SHANX SERVICES / THE EXPERIMENTAL PLAYGROUND</div>
 <h1><span>ARCADE</span><span class="glow">LAB<span style="color:#fafaf3">.</span></span></h1>
-<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>18</strong>Playable arcade challenges<br>Made for the browser</div></div>
+<div class="hero-bottom"><p class="hero-lead">Big ideas. Tiny browsers. Real games. Explore original playable experiments from the ShanX workshop.</p><div class="hero-aside"><strong>19</strong>Playable arcade challenges<br>Made for the browser</div></div>
 </header>
 <div class="strip"><div class="shell strip-in"><span><em>●</em> CLICK TO PLAY</span><span>DESKTOP + MOBILE</span><span>FREE EXPERIMENTS</span><span>NO DOWNLOAD NEEDED</span></div></div>
 <section class="games shell" id="play">
-<div class="section-head"><div><div class="eyebrow">INSERT CURIOSITY</div><h2>Choose your game.</h2></div><p>Made to be played, tested, and improved. Your next favorite prototype could start here.</p></div>
+<div class="section-head"><div><div class="eyebrow">2D ARCADE · 18 CLASSIC GAMES</div><h2>Choose your 2D game.</h2></div><p>Made to be played, tested, and improved. Your next favorite prototype could start here.</p></div>
 <div class="game-grid">
 <article class="game"><div class="game-media"><span class="game-index">LEVEL 001</span><span class="game-genre">NEON ROAD RUNNER</span><img src="media/street-sprint-gameplay.png" alt="Street Sprint gameplay showing a colorful car racing down a dark neon-lit road" loading="eager"></div><div class="game-info">
 <h3>Street Sprint.</h3>
@@ -107,6 +131,16 @@ footer{border-top:1px solid var(--line);padding:30px 0 46px}.foot{display:flex;j
 <a class="micro-tile" href="games/classic-arcade.html?game=lunarLander" aria-label="Play Moon Landing"><span class="micro-number">016</span><span class="micro-emoji" aria-hidden="true">🌙</span><strong>Moon Landing</strong><small>Touch down softly.</small><span class="micro-play">PLAY NOW ↗</span></a>
 <a class="micro-tile" href="games/classic-arcade.html?game=pinball" aria-label="Play Neon Pinball"><span class="micro-number">017</span><span class="micro-emoji" aria-hidden="true">🎱</span><strong>Neon Pinball</strong><small>Keep the ball in play.</small><span class="micro-play">PLAY NOW ↗</span></a>
 <a class="micro-tile" href="games/classic-arcade.html?game=targetRange" aria-label="Play Quick Target"><span class="micro-number">018</span><span class="micro-emoji" aria-hidden="true">🎯</span><strong>Quick Target</strong><small>Hit the target before it escapes.</small><span class="micro-play">PLAY NOW ↗</span></a></div></section>
+<section class="three-d-arcade" id="arcade3d" aria-labelledby="threeDHeading">
+<div class="three-d-head"><div><div class="eyebrow">3D ARCADE · TRUE 3D BROWSER GAMES</div><h2 id="threeDHeading">A new <em>dimension.</em></h2><p>Keep the original 18 games, then step into upgraded 3D editions as they pass testing. 3D games use WebGL, so graphics performance varies by device.</p></div></div>
+<div class="three-d-grid">
+<article class="three-d-feature"><img src="media/paddle-duel-3d-gameplay.png" alt="Actual screenshot of 3D Paddle Duel with lit raised court, glowing ball and green and gold paddles" loading="lazy"><div><div class="label">PLAYABLE NOW · 3D GAME 001</div><h3>Paddle Duel 3D</h3><p>The classic paddle challenge rebuilt with real 3D geometry, lights, a glowing ball, touch controls and Easy, Normal or Hard settings.</p><a href="games/paddle-duel-3d.html">PLAY PADDLE DUEL 3D ↗</a></div></article>
+<aside class="three-d-queue"><div class="label">3D DEVELOPMENT QUEUE</div><h3>Building the next worlds.</h3><p>These editions are planned or in development. They are not public playable 3D games yet.</p><ul>
+<li><span>NEXT UPGRADE</span>Crossing Quest 3D: moving traffic and real depth</li>
+<li><span>PLANNED</span>Street Sprint 3D: a fully modeled road</li>
+<li><span>PLANNED</span>Foam Blaster 3D: richer arenas and animated bots</li>
+<li><span>PROTOTYPE IN REVIEW</span>Pittsburgh Nights: miniature walkable city</li>
+</ul></aside></div></section>
 <div class="lab-note"><span class="lab-mark">✦</span><div><strong>A lab, not a finished-game store.</strong><p>These are experimental alpha builds. They're playable now, and the lab will evolve as we make them better. Gameplay progress and highscores stay in your browser where supported.</p></div></div>
 </section>
 </main>
