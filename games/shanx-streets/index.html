@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>ShanX Streets: Homewood Edition v13.2</title>
+<title>ShanX Streets: Homewood Android v15</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#fff}
 canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
@@ -53,6 +53,14 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 #streetTag{position:fixed;left:50%;top:42px;transform:translateX(-50%);z-index:9;color:#c9d8dc;font:700 10px system-ui;pointer-events:none;text-shadow:0 2px 5px #000}
 @media(max-width:500px){#hoodName{top:8px;font-size:9px;padding:5px 7px}#streetTag{top:33px;font-size:8px}}
 
+/* v15: touch-safe android status and visible target energy */
+#targetHealth{position:fixed;left:50%;top:calc(100px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:12;pointer-events:none;width:168px;max-width:36vw;padding:7px 9px;border:1px solid #78e8d5cc;border-radius:10px;background:#071e2ce8;box-shadow:0 3px 16px #0008;color:#d4fff4;font:800 10px system-ui;text-align:center;letter-spacing:.06em}
+#targetHealth[hidden]{display:none}
+#targetHealthTrack{height:7px;margin-top:5px;background:#2a4756;border-radius:9px;overflow:hidden}
+#targetHealthFill{height:100%;width:100%;background:linear-gradient(90deg,#e3b767,#69f0d6);transition:width .15s}
+#combatStats{color:#b8f8e9;border-color:#70d9ca99}
+#hitConfirm{color:#befff3;text-shadow:0 3px 20px #000,0 0 13px #39b8a1}
+@media(max-width:570px){#targetHealth{top:calc(91px + env(safe-area-inset-top,0px));max-width:42vw;width:138px;font-size:9px}}
 /* v14 tablet-first HUD: context-sensitive circular face controls, not a square-button keyboard. */
 #actionDeck{
   right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));
@@ -163,8 +171,8 @@ body[data-ui="car"] #bMore,body[data-ui="fly"] #bMore{display:none}
 <button id="bPunch" type="button" class="btn" aria-label="PUNCH">PUNCH</button>
 </div>
 <div id="gameStats"><div class="gold" id="money">$2,450</div><div class="health" id="health">HEALTH 100%</div><div class="wanted" id="wanted">☆☆☆</div><div class="mission" id="mission">Mission initializing</div></div>
-<div id="combatStats">HITS <span id="hitTotal">0</span> · AIM FRONT · Q / SHOOT</div><div id="hitConfirm" aria-live="polite"></div>
-<div id="doorHelp">ENTER / E: OPEN DOOR</div><div id="targetRing"></div><div id="missionFlash"></div><div id="loadingError"></div>
+<div id="combatStats">PULSE HITS <span id="hitTotal">0</span> · SEARCHING · Q / SHOOT</div><div id="hitConfirm" aria-live="polite"></div>
+<div id="targetHealth" hidden aria-live="off"><div id="targetName">SCANNING</div><div id="targetHealthTrack"><div id="targetHealthFill"></div></div></div><div id="doorHelp">ENTER / E: OPEN DOOR</div><div id="targetRing"></div><div id="missionFlash"></div><div id="loadingError"></div>
 <div id="err"></div>
 
 <script type="module">
@@ -365,6 +373,7 @@ function addBuilding(cx,cz,w,d,h,tint){
    and gaps/vacant lots. Inspired by Homewood's physical character; not parcel-exact. */
 const homeHouseColors=[0x7b3f31,0x974e39,0x7f5f4c,0x9a6958,0xb4a48d,0x7f7c71,0x605d54];
 const homeRoofColors=[0x363a40,0x494945,0x543d35,0x2d383e];
+const homePorchLight=new THREE.MeshStandardMaterial({color:0xe5c590,emissive:0xffd48a,emissiveIntensity:0,roughness:.3});
 const homeWindowGlow=new THREE.MeshStandardMaterial({color:0x8c9ca1,emissive:0xffcd82,emissiveIntensity:0,roughness:.35});
 const homeWindowDark=new THREE.MeshStandardMaterial({color:0x233b47,roughness:.32,metalness:.08});
 const homeTrim=new THREE.MeshStandardMaterial({color:0xd9cfbf,roughness:.88});
@@ -411,6 +420,7 @@ function addHome(x,z,w,d,style=0,angle=0){
  for(const sign of[-1,1])for(let k=0;k<4;k++)homeAdd(g,.085,.8,.09,homeTrim,sign*(1.9+k*.38),1.0,d/2+2.23,.01);
  const door=homeAdd(g,1.3,2.45,.13,homeDoorMat,.0,1.45,d/2+.11,.02);
  homeAdd(g,.05,.11,.08,homeTrim,.42,1.43,d/2+.24,.01);
+ homeAdd(g,.23,.32,.24,homePorchLight,1.1,2.15,d/2+.25,.04);
  const frontW=Math.min(1.28,w*.22);
  for(const side of[-1,1]){
   for(const level of[0,1]){
@@ -500,6 +510,15 @@ function makePark(cx,cz,type){
  parkPlaces.push({x:cx,z:cz,type});parkSign(cx-19,cz+26,type==='playground'?'HOMEWOOD PARK':'DALLAS PARKLET');
 }
 
+// Conceptual street names reflect Homewood's actual corridor vocabulary, not GIS-exact geometry.
+function neighborhoodStreetSign(x,z,label){
+ const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
+ const stem=new THREE.Mesh(new THREE.CylinderGeometry(.095,.11,3.8,9),new THREE.MeshStandardMaterial({color:0x6d7777,roughness:.7}));stem.position.y=1.9;g.add(stem);
+ const board=new THREE.Mesh(new THREE.PlaneGeometry(4.5,.75),new THREE.MeshBasicMaterial({map:signTexture(label),side:THREE.DoubleSide}));
+ board.position.set(0,3.5,.15);g.add(board);return g;
+}
+for(const [i,j,label] of [[4,4,'N. HOMEWOOD AVE'],[4,3,'FRANKSTOWN AVE'],[3,4,'HAMILTON AVE'],[2,4,'BENNETT ST'],[5,4,'N. DALLAS AVE'],[6,4,'BRUSHTON AVE']])
+ neighborhoodStreetSign(C[i]+12,C[j]+12,label);
 const slabGeo=new RoundedBoxGeometry(BLOCK,0.3,BLOCK,2,0.12);
 const slabMat=new THREE.MeshStandardMaterial({color:0xb9bbc0,roughness:0.9});
 const grassMat=new THREE.MeshStandardMaterial({color:0x4d8a46,roughness:1});
@@ -517,7 +536,8 @@ for(let i=0;i<N-1;i++)for(let j=0;j<N-1;j++){
   }
   // Homewood/Frankstown commercial streets mix small independent shops with houses;
   // side-street blocks contain brick rows, porches, gaps and occasional open lots.
-  const corridor=(i===3||i===4||j===3||j===4);
+  // Frankstown and N. Homewood commercial corridors; side streets stay residential.
+  const corridor=(i===4||j===4||(i===3&&j>=3&&j<=5));
   for(let a=0;a<2;a++)for(let b=0;b<2;b++){
     const hx=cx+(a?16:-16),hz=cz+(b?16:-16);
     const vacant=((i*13+j*7+a*5+b*3)%17===0)||((i*5+j*11+a+b)%29===0);
@@ -526,7 +546,7 @@ for(let i=0;i<N-1;i++)for(let j=0;j<N-1;j++){
       if((i+j+a+b)%2===0)for(let t=0;t<2;t++)treeSpots.push([hx+(t?6:-6),hz-4]);
       continue;
     }
-    const shop=corridor&&((i*7+j*11+a+b)%4!==0);
+    const shop=corridor&&((i*7+j*11+a+b)%3===0);
     // The closest perpendicular street gets the front porch or storefront.
     const faceX=((i+j+a+b)%3!==0);
     const angle=faceX?(a?Math.PI/2:-Math.PI/2):(b?0:Math.PI);
@@ -659,9 +679,10 @@ const peopleGeometry=new THREE.SphereGeometry(1,18,14);
 const skinShades=[0xdba57e,0xa97952,0x8e5e40,0xefc6a1,0xc38b65],jacketColors=[0x234c82,0x9d4b47,0x267267,0x8768a4,0x8e6b37,0x375f7b];
 const peopleMaterials=new Map();
 function pMat(color,rough=.86){const k=color+'-'+rough;if(!peopleMaterials.has(k))peopleMaterials.set(k,new THREE.MeshStandardMaterial({color,roughness:rough}));return peopleMaterials.get(k)}
-function sculptPerson(shirtColor=0x234c82,skinColor=0xdba57e){
+function sculptPerson(shirtColor=0x234c82,skinColor=0xdba57e,isAndroid=false){
  const g=new THREE.Group(),figure=new THREE.Group();g.add(figure);
- const cloth=pMat(shirtColor,.68),skin=pMat(skinColor,.83),pants=pMat(0x263140),shoe=pMat(0x191f26),hair=pMat(0x251c19),scl=pMat(0x929697),eye=pMat(0x151b20),eyeWhite=pMat(0xf4ead9);
+ const cloth=pMat(isAndroid?0xd1d7d4:shirtColor,isAndroid?.29:.68),skin=pMat(isAndroid?0x8fa5af:skinColor,isAndroid?.3:.83),pants=pMat(isAndroid?0x344b57:0x263140),shoe=pMat(isAndroid?0x151e2a:0x191f26),hair=pMat(isAndroid?0x202d37:0x251c19),scl=pMat(isAndroid?0x9dc4c4:0x929697),eye=pMat(isAndroid?0x52ffe0:0x151b20),eyeWhite=pMat(isAndroid?0x122a37:0xf4ead9);
+ if(isAndroid){eye.emissive=new THREE.Color(0x39e5cd);eye.emissiveIntensity=2.4;eye.roughness=.12;cloth.metalness=.47;skin.metalness=.55;hair.metalness=.38;}
  const ell=(parent,mat,x,y,z,sx,sy,sz)=>{const o=new THREE.Mesh(peopleGeometry,mat);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.castShadow=true;parent.add(o);return o};
  ell(figure,pants,0,.86,0,.305,.22,.20);ell(figure,cloth,0,1.18,0,.31,.41,.24);ell(figure,cloth,0,1.49,0,.24,.12,.21);ell(figure,skin,0,1.52,.01,.097,.13,.10);
  const head=new THREE.Group();head.position.y=1.74;figure.add(head);
@@ -672,7 +693,28 @@ function sculptPerson(shirtColor=0x234c82,skinColor=0xdba57e){
  const arms=[],legs=[],knees=[];
  for(const sign of [-1,1]){const arm=new THREE.Group();arm.position.set(sign*.335,1.42,0);figure.add(arm);ell(arm,cloth,0,-.2,0,.115,.27,.13);ell(arm,skin,0,-.49,.028,.09,.2,.092);ell(arm,skin,0,-.63,.038,.10,.095,.10);arms.push(arm)}
  for(const sign of [-1,1]){const leg=new THREE.Group();leg.position.set(sign*.165,.9,0);figure.add(leg);ell(leg,pants,0,-.2,0,.145,.26,.16);const knee=new THREE.Group();knee.position.set(0,-.405,.012);leg.add(knee);ell(knee,pants,0,-.17,0,.122,.22,.13);ell(knee,shoe,0,-.347,.10,.151,.10,.253);ell(knee,scl,0,-.407,.12,.15,.023,.24);legs.push(leg);knees.push(knee)}
- return {root:g,figure,head,arms,legs,knees,phase:0,blend:0};
+ let emitter=null,muzzleFlash=null,core=null;
+ if(isAndroid){
+  const trim=pMat(0x20434a,.32),accent=new THREE.MeshStandardMaterial({color:0x42e9cd,emissive:0x18b4aa,emissiveIntensity:1.8,metalness:.15,roughness:.26});
+  const plate=pMat(0xe7e6d8,.26);plate.metalness=.25;
+  ell(figure,plate,0,1.25,.214,.28,.25,.052);
+  core=ell(figure,accent,0,1.24,.285,.08,.12,.025);
+  ell(head,trim,0,.145,.205,.225,.092,.07);
+  ell(head,accent,0,-.24,.04,.19,.029,.15);
+  for(const side of [-1,1]){
+   ell(figure,plate,side*.34,1.39,.055,.16,.16,.16);
+   ell(head,trim,side*.252,.005,.015,.07,.135,.10);
+   ell(figure,trim,side*.165,.52,.14,.115,.13,.09);
+  }
+  // Integrated LEFT forearm pulse emitter: fictional sci-fi prop, not a real-world gun.
+  const pod=new THREE.Group();pod.position.set(0,-.51,.11);arms[0].add(pod);
+  const caseMesh=new THREE.Mesh(new THREE.CylinderGeometry(.14,.17,.4,14),plate);
+  caseMesh.rotation.x=Math.PI/2;caseMesh.position.set(0,-.02,.19);caseMesh.castShadow=true;pod.add(caseMesh);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.105,.035,8,18),accent);ring.position.set(0,-.02,.43);pod.add(ring);
+  muzzleFlash=new THREE.Mesh(new THREE.SphereGeometry(.16,12,8),accent);muzzleFlash.position.set(0,-.02,.46);muzzleFlash.visible=false;pod.add(muzzleFlash);
+  emitter=new THREE.Object3D();emitter.position.set(0,-.02,.51);pod.add(emitter);
+ }
+ return {root:g,figure,head,arms,legs,knees,phase:0,blend:0,emitter,muzzleFlash,core,hitMat:cloth,flashTimer:0};
 }
 function animatePerson(rig,spd,dt,punch=0){
  rig.phase+=Math.abs(spd)*dt*2.0;const weight=clamp(Math.abs(spd)/4.4,0,1);
@@ -680,13 +722,13 @@ function animatePerson(rig,spd,dt,punch=0){
  const stride=Math.sin(rig.phase)*rig.blend*.56;
  rig.legs[0].rotation.x=stride;rig.legs[1].rotation.x=-stride;
  rig.knees[0].rotation.x=Math.max(0,-stride)*.85;rig.knees[1].rotation.x=Math.max(0,stride)*.85;
- rig.arms[0].rotation.x=-stride*.79;rig.arms[1].rotation.x=stride*.79;
+ rig.arms[0].rotation.x=rig.emitter?(-1.28-stride*.05):(-stride*.79);rig.arms[1].rotation.x=stride*.79;
  if(punch>0)rig.arms[1].rotation.x=-Math.sin((1-punch/.29)*Math.PI)*1.9;
  rig.figure.position.y=Math.abs(Math.sin(rig.phase))*rig.blend*.024;
  rig.figure.rotation.z=Math.sin(rig.phase)*rig.blend*.012;
  rig.head.rotation.x=Math.sin(rig.phase*2)*rig.blend*.015;
 }
-const playerRig=sculptPerson(0x24539d,0xdba57e);const person=playerRig.root;scene.add(person);person.visible=false;
+const playerRig=sculptPerson(0x24539d,0xdba57e,true);const person=playerRig.root;scene.add(person);person.visible=false;
 const legL=playerRig.legs[0],legR=playerRig.legs[1],armL=playerRig.arms[0],armR=playerRig.arms[1];
 /* ---------- input ---------- */
 const stick={x:0,y:0},keys={x:0,y:0};
@@ -895,10 +937,21 @@ function spawnPedestrians(){
   npcList.push({rig,x,z,axis,dir:Math.random()<.5?-1:1,speed:rnd(.65,1.45),stun:0,down:0,hp:12,maxHp:12,hitReact:0,angry:0,attack:0});
  }
 }
+// Local street life near the player's starting car helps test targeting without empty blocks.
+function spawnNearbyPeople(){
+ const startX=C[2]+4,startZ=C[2]+30;
+ for(const [dx,dz] of [[3,9],[-6,15],[4,24],[-4,32],[7,46]]){
+  const rig=sculptPerson(pick(jacketColors),pick(skinShades));scene.add(rig.root);
+  const p={rig,x:startX+dx,z:startZ+dz,axis:false,dir:1,speed:.85,stun:0,down:0,hp:12,maxHp:12,hitReact:0,angry:0,attack:0};
+  const pos={x:p.x,z:p.z};if(pushFromBuildings(pos,.55)){p.x=pos.x;p.z=pos.z;}
+  rig.root.position.set(p.x,groundY(p.x,p.z),p.z);npcList.push(p);
+ }
+}
 function updatePedestrians(dt){
  const target=you();
  for(const p of npcList){
   p.stun=Math.max(0,p.stun-dt);p.down=Math.max(0,p.down-dt);p.hitReact=Math.max(0,p.hitReact-dt);p.angry=Math.max(0,p.angry-dt);p.attack=Math.max(0,p.attack-dt);
+  if(p.rig.hitMat&&p.hitReact===0)p.rig.hitMat.emissiveIntensity=0;
   if(p.down<=0&&p.hp<=0){p.hp=p.maxHp;p.stun=0;p.angry=0;p.rig.figure.rotation.z=0;p.rig.root.rotation.x=0;}
   let dx=0,dz=0;
   if(p.down>0){p.rig.figure.rotation.z=lerp(p.rig.figure.rotation.z,.75,Math.min(1,dt*9));p.rig.root.rotation.x=lerp(p.rig.root.rotation.x,-1.07,Math.min(1,dt*8));animatePerson(p.rig,0,dt)}
@@ -937,14 +990,16 @@ function clearCombatLine(x0,z0,x1,z1){
 }
 function acquireTarget(){
  const o=you(),heading=mode==='car'?pv.h+carYaw:footYaw,fx=Math.sin(heading),fz=Math.cos(heading);
- const limit=mode==='car'?55:40,minDot=Math.cos(.82);let best=null,bestDistance=limit;
+ const limit=mode==='car'?78:66,minDot=Math.cos(1.12);let best=null,bestScore=Infinity;
  const find=(kind,obj,x,z)=>{
   const dx=x-o.x,dz=z-o.z,d=Math.hypot(dx,dz);
-  if(d<.65||d>=limit||d>=bestDistance)return;
-  if((dx*fx+dz*fz)/d<minDot||!clearCombatLine(o.x,o.z,x,z))return;
-  best={kind,obj,x,z,d};bestDistance=d;
+  if(d<.65||d>limit)return;
+  const dot=(dx*fx+dz*fz)/d;
+  if(dot<minDot||!clearCombatLine(o.x,o.z,x,z))return;
+  // Strong center preference, modest distance penalty. NPCs take priority over distant cars.
+  const score=(1-dot)*42+d*.12+(kind==='car'?4:0);
+  if(score<bestScore){best={kind,obj,x,z,d,dot};bestScore=score;}
  };
- // Prioritize visible people, as in the earlier combat build. Staggered NPCs remain hittable.
  for(const p of npcList)if(p.down<=0&&p.hp>0)find('ped',p,p.x,p.z);
  if(!best)for(const c of vehicles)if(c!==pv&&c.health>0)find('car',c,c.x,c.z);
  return best;
@@ -965,6 +1020,7 @@ function applyPedHit(p,kind='shot'){
  if(p.hp<=0||p.down>0)return false;
  p.hp=Math.max(0,p.hp-(kind==='shot'?4:1));
  p.stun=.38;p.hitReact=.42;p.attack=.85;p.angry=8;
+ if(p.rig.hitMat){p.rig.hitMat.emissive.setHex(0x30ddcf);p.rig.hitMat.emissiveIntensity=.8;}
  if(p.hp===0){p.down=5.2;p.angry=0;dropCoin(p.x,p.z);confirmShot('TARGET DOWN');}
  else confirmShot('HIT · '+p.hp+'/'+p.maxHp);
  landedHits++;$('hitTotal').textContent=String(landedHits);
@@ -972,20 +1028,39 @@ function applyPedHit(p,kind='shot'){
  return true;
 }
 const tracer=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(0,0,1)]),new THREE.LineBasicMaterial({color:0xffd77c,transparent:true,opacity:.93,depthTest:false}));tracer.visible=false;scene.add(tracer);let tracerTimer=0;
+// A visible arcade energy pulse from the avatar's forearm or vehicle hood.
+const pulseOrigin=new THREE.Vector3();let impactTime=0;
+const pulseImpact=new THREE.Mesh(new THREE.SphereGeometry(.29,12,8),new THREE.MeshBasicMaterial({color:0x68ffe3,transparent:true,opacity:.78,depthWrite:false}));
+pulseImpact.visible=false;scene.add(pulseImpact);
 function shoot(){
  if(gamePaused||shotCooldown>0)return false;
- shotCooldown=.27;initAudio();soundFx(550,.065);
+ shotCooldown=.24;initAudio();soundFx(680,.065);
  const o=you(),heading=mode==='car'?pv.h+carYaw:footYaw,fx=Math.sin(heading),fz=Math.cos(heading);
- const t=acquireTarget(),dist=mode==='car'?55:40,fromY=(mode==='foot'?P.y+P.alt:pv.y)+1.35;
- let tx=o.x+fx*dist,tz=o.z+fz*dist,ty=fromY;
- if(t){tx=t.x;tz=t.z;ty=t.kind==='ped'?t.obj.rig.root.position.y+1.35:1.2;
-  if(t.kind==='ped'){applyPedHit(t.obj);if(mode==='foot')P.h=Math.atan2(tx-o.x,tz-o.z);}
-  else{const v=t.obj;v.health=Math.max(0,v.health-30);if(v.paint){v.paint.roughness=Math.min(1,.28+(100-v.health)*.005);v.paint.needsUpdate=true}landedHits++;confirmShot(v.health?'VEHICLE HIT':'VEHICLE STOPPED');if(!v.health){v.mode='parked';v.speed=0;}addWanted(1)}
+ const t=acquireTarget(),dist=mode==='car'?78:66,fromY=(mode==='foot'?P.y+P.alt:pv.y)+1.35;
+ let tx=o.x+fx*dist,tz=o.z+fz*dist,ty=fromY,hit=false;
+ if(mode==='foot'){
+  playerRig.arms[0].rotation.x=-1.28;person.updateMatrixWorld(true);
+  if(playerRig.emitter)playerRig.emitter.getWorldPosition(pulseOrigin);
+  else pulseOrigin.set(o.x+fx*.75,fromY,o.z+fz*.75);
+  if(playerRig.muzzleFlash){playerRig.muzzleFlash.visible=true;playerRig.flashTimer=.15;}
+ }else pulseOrigin.set(o.x+fx*2.2,fromY+.1,o.z+fz*2.2);
+ if(t){tx=t.x;tz=t.z;ty=t.kind==='ped'?t.obj.rig.root.position.y+1.35:(t.obj.y||0)+1.25;
+  if(t.kind==='ped'){
+   hit=applyPedHit(t.obj);
+   if(mode==='foot')P.h=Math.atan2(tx-o.x,tz-o.z);
+  }else{
+   const v=t.obj;const prev=v.health;v.health=Math.max(0,v.health-30);
+   if(v.paint){v.paint.roughness=Math.min(1,.28+(100-v.health)*.005);v.paint.needsUpdate=true;}
+   hit=v.health<prev;if(hit){landedHits++;confirmShot(v.health?'VEHICLE HIT · '+v.health+'%':'VEHICLE STOPPED');addWanted(1);}
+   if(!v.health){v.mode='parked';v.speed=0;}
+  }
+  if(hit){pulseImpact.position.set(tx,ty,tz);pulseImpact.visible=true;impactTime=.2;}
+ }else{
+  const text=$('hitConfirm');text.textContent='NO TARGET · POINT TOWARD A PERSON OR CAR';text.classList.add('on');hitConfirmTime=.8;
  }
- const start=new THREE.Vector3(o.x+fx*.6,fromY,o.z+fz*.6);
  const end=new THREE.Vector3(tx,ty,tz);
- tracer.geometry.dispose();tracer.geometry=new THREE.BufferGeometry().setFromPoints([start,end]);tracer.visible=true;tracerTimer=.12;
- return !!t;
+ tracer.geometry.dispose();tracer.geometry=new THREE.BufferGeometry().setFromPoints([pulseOrigin,end]);tracer.visible=true;tracerTimer=.18;
+ return hit;
 }
 function punch(){
  if(gamePaused||mode!=='foot'||P.fly||P.alt>1.3||punchCooldown>0)return false;
@@ -995,7 +1070,17 @@ function punch(){
  if(best){P.h=Math.atan2(best.x-P.x,best.z-P.z);applyPedHit(best,'punch');return true}
  return false;
 }
-function updateLock(){const t=acquireTarget(),r=$('targetRing');if(!t){r.style.display='none';return}const point=new THREE.Vector3(t.x,t.kind==='ped'?t.obj.rig.root.position.y+1.6:1.8,t.z).project(camera);if(point.z< -1||point.z>1||Math.abs(point.x)>.94||Math.abs(point.y)>.92){r.style.display='none';return}r.style.display='block';r.style.left=((point.x+1)*innerWidth/2)+'px';r.style.top=((1-point.y)*innerHeight/2)+'px'}
+function updateLock(){
+ const t=acquireTarget(),r=$('targetRing'),bar=$('targetHealth');
+ if(!t){r.style.display='none';bar.hidden=true;$('combatStats').lastChild.textContent=' · NO TARGET · FACE A PERSON OR CAR';return}
+ const point=new THREE.Vector3(t.x,t.kind==='ped'?t.obj.rig.root.position.y+1.6:(t.obj.y||0)+1.6,t.z).project(camera);
+ if(point.z< -1||point.z>1||Math.abs(point.x)>.95||Math.abs(point.y)>.95){r.style.display='none';bar.hidden=true;return}
+ r.style.display='block';r.style.left=((point.x+1)*innerWidth/2)+'px';r.style.top=((1-point.y)*innerHeight/2)+'px';
+ $('combatStats').lastChild.textContent=' · LOCKED · '+Math.round(t.d)+'m';
+ bar.hidden=false;const hp=t.kind==='ped'?t.obj.hp:t.obj.health,max=t.kind==='ped'?t.obj.maxHp:100;
+ $('targetName').textContent=(t.kind==='ped'?'PERSON · ENERGY ':'VEHICLE · CONDITION ')+hp+'/'+max;
+ $('targetHealthFill').style.width=Math.max(0,Math.round(hp/max*100))+'%';
+}
 // Road police and an altitude-aware pursuit aircraft. Police cannot arrest an airborne player.
 function updatePolice(dt){
  const focus=you();wantedTimer+=dt;
@@ -1238,7 +1323,7 @@ function updateSky(focus){
   scene.fog.color.lerpColors(fogNight,fogDay,day).lerp(fogGold,gold*0.55);
   stars.material.opacity=smooth(0.3,0.9,night);
   const wi=night*1.6;for(const m of bMats)m.emissiveIntensity=wi;
-  homeWindowGlow.emissiveIntensity=night*2.6;
+  homeWindowGlow.emissiveIntensity=night*2.6;homePorchLight.emissiveIntensity=night*3.6;
   lampHeadMat.emissiveIntensity=night*5;
   headMat.emissiveIntensity=0.35+night*6;tailMat.emissiveIntensity=0.6+night*2.5;
   bloom.strength=0.35+0.5*night;
@@ -1273,6 +1358,8 @@ function frame(){
   updateTabletControls();
   if(!gamePaused&&(btn.fire||down.has('KeyQ')))shoot();
   if(tracerTimer>0){tracerTimer-=dt;if(tracerTimer<=0)tracer.visible=false}
+  if(impactTime>0){impactTime-=dt;if(impactTime<=0)pulseImpact.visible=false}
+  if(playerRig.flashTimer>0){playerRig.flashTimer-=dt;if(playerRig.flashTimer<=0&&playerRig.muzzleFlash)playerRig.muzzleFlash.visible=false}
   if(hitConfirmTime>0){hitConfirmTime=Math.max(0,hitConfirmTime-dt);if(hitConfirmTime===0){$('hitConfirm').classList.remove('on');$('targetRing').classList.remove('hit')}}
   input.x=clamp(stick.x+keys.x,-1,1);input.y=clamp(stick.y+keys.y,-1,1);
   if(gamePaused){composer.render();return}
@@ -1351,10 +1438,10 @@ function resize(){
 }
 addEventListener('resize',resize);
 camPos.set(pv.x,pv.y+4,pv.z-10);
-installDoors();spawnPedestrians();resetMission();
+installDoors();spawnPedestrians();spawnNearbyPeople();resetMission();
 setTimeout(()=>$('title').style.opacity=0,7000);
-window.__X13_FUSION_BUILD='single-stick-v11.1';window.__X13_FUSION_DIAGNOSTICS=()=>({vehicles:vehicles.length,people:npcList.length,doors:enterableBuildings.length,mission:missionIndex,wanted,fly:P.fly,paused:gamePaused,landedHits,activeNPCs:npcList.filter(p=>p.hp>0).length});
-window.__X13_TABLET_BUILD='v14-tablet-controls';window.__X13_COMBAT_BUILD='v13.2-homewood';window.__X13_HOMEWOOD_DIAGNOSTICS=()=>({blocks:(N-1)*(N-1),houses:buildingObjects.filter(b=>b.kind==='residence').length,shops:buildingObjects.filter(b=>b.kind==='storefront').length,parks:parkPlaces.length,treeTrunks:treeSpots.length,vehicles:vehicles.length,bicycles:vehicles.filter(v=>v.type==='bike').length,missions:MS.length,cashDrops:moneyTokens.length,npcs:npcList.length});
+window.__X13_FUSION_BUILD='single-stick-v11.1';window.__X13_FUSION_DIAGNOSTICS=()=>({vehicles:vehicles.length,people:npcList.length,avatar:'X13 android sentinel',combat:'visible non-graphic energy pulses',doors:enterableBuildings.length,mission:missionIndex,wanted,fly:P.fly,paused:gamePaused,landedHits,activeNPCs:npcList.filter(p=>p.hp>0).length});
+window.__X13_TABLET_BUILD='v15-android-combat';window.__X13_COMBAT_BUILD='v13.2-homewood';window.__X13_HOMEWOOD_DIAGNOSTICS=()=>({blocks:(N-1)*(N-1),houses:buildingObjects.filter(b=>b.kind==='residence').length,shops:buildingObjects.filter(b=>b.kind==='storefront').length,parks:parkPlaces.length,treeTrunks:treeSpots.length,vehicles:vehicles.length,bicycles:vehicles.filter(v=>v.type==='bike').length,missions:MS.length,cashDrops:moneyTokens.length,npcs:npcList.length});
 frame();
 </script>
 </body>
