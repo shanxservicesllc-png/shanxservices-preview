@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const config = window.JETER_SITE_CONFIG || {};
+  const config = window.GEETER_SITE_CONFIG || {};
   const setText = (selector, value) => {
     if (typeof value !== 'string') return;
     document.querySelectorAll(selector).forEach(el => { el.textContent = value; });
@@ -14,7 +14,7 @@
       setText(`[data-service="${index}-description"]`, service.description);
     });
   }
-  document.title = `${config.name || 'Jeter'} | Built Around You`;
+  document.title = `${config.name || 'Geeter Pro Solutions'} | Commercial Cleaning`;
   document.querySelector('#year').textContent = String(new Date().getFullYear());
   const toggle = document.querySelector('.mobile-toggle');
   const nav = document.querySelector('#mobile-nav');
